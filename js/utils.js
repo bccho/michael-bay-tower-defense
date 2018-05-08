@@ -1,3 +1,4 @@
+import * as THREE from "three";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utility function to accessing correct element in arrays                    //
@@ -26,7 +27,7 @@ function getElement ( i, attrib ) {
         return undefined;
 
     }
-};
+}
 
 function getGridElement ( i, j, width, attrib ) {
     var idx = j * width + i;
@@ -53,7 +54,7 @@ function getGridElement ( i, j, width, attrib ) {
         return undefined;
 
     }
-};
+}
 
 function setElement ( i, attrib, val ) {
     if ( attrib.itemSize === 1 ) {

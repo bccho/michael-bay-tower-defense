@@ -21,10 +21,10 @@ Parser.getCommands = function( url ) {
             var command = commands[j];
             var parts = command.split("=");
 
-            if (command.length == 0) {
+            if (command.length === 0) {
                 continue;
             }
-            else if (parts.length == 1) {
+            else if (parts.length === 1) {
                 params[ parts[0] ] = true;
             } else {
                 params[ parts[0] ] = parts[1];
@@ -46,9 +46,9 @@ Parser.parseCommands = function(applies) {
             var v = unescape( commands[cmd] ).replace( '+', ' ' );
             if ( !isNaN( parseFloat(v) ) ) {
                 v = parseFloat(v);
-            } else if ( v == 'true' ) {
+            } else if ( v === 'true' ) {
                 v = true;
-            } else if ( v == 'false' ) {
+            } else if ( v === 'false' ) {
                 v = false;
             }
             apply[cmd] = v;
@@ -62,7 +62,7 @@ Parser.parseNumbers = function( str ) {
     var numbers = [];
     str.split(",").forEach(function(interval) {
         var parts = interval.split("-");
-        if (parts.length == 1) {
+        if (parts.length === 1) {
             numbers.push(parseInt(parts[0]));
         } else {
             var start = parseInt(parts[0]);

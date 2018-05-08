@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 var SystemSettings = SystemSettings || {};
 
 SystemSettings.standardMaterial = new THREE.ShaderMaterial( {
@@ -94,8 +96,8 @@ SystemSettings.oscilator = {
     createScene : function () {
         var sphere_geo = new THREE.SphereGeometry( 1.0, 32, 32 );
         var phong      = new THREE.MeshPhongMaterial( {color: 0x444444, emissive:0x224422, side: THREE.DoubleSide } );
-        var sphere = new THREE.Mesh( sphere_geo, phong )
-        var sphere2= new THREE.Mesh( sphere_geo, phong )
+        var sphere     = new THREE.Mesh( sphere_geo, phong );
+        var sphere2    = new THREE.Mesh( sphere_geo, phong );
 
         sphere.position.set (0,50,0);
         Scene.addObject( sphere );
@@ -144,7 +146,7 @@ SystemSettings.fountainBounce = {
         var plane_geo = new THREE.PlaneBufferGeometry( 1000, 1000, 1, 1 );
         var phong     = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
 
-        var box_geo   = new THREE.BoxGeometry(10,30,10)
+        var box_geo   = new THREE.BoxGeometry(10, 30, 10);
 
         var plane     = new THREE.Mesh( plane_geo, phong );
         var box       = new THREE.Mesh( box_geo, phong );
@@ -193,7 +195,7 @@ SystemSettings.fountainSink = {
         var plane_geo = new THREE.PlaneBufferGeometry( 1000, 1000, 1, 1 );
         var phong     = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
 
-        var box_geo   = new THREE.BoxGeometry(10,30,10)
+        var box_geo   = new THREE.BoxGeometry(10, 30, 10);
 
         var plane     = new THREE.Mesh( plane_geo, phong );
         var box       = new THREE.Mesh( box_geo, phong );
@@ -243,7 +245,7 @@ SystemSettings.attractor = {
     createScene : function () {
         var sphere_geo = new THREE.SphereGeometry( 1.0, 32, 32 );
         var phong      = new THREE.MeshPhongMaterial( {color: 0x444444, emissive:0x442222, side: THREE.DoubleSide } );
-        var sphere = new THREE.Mesh( sphere_geo, phong )
+        var sphere = new THREE.Mesh( sphere_geo, phong );
 
         sphere.position.set (30.0, 30.0, 30.0);
         Scene.addObject( sphere );

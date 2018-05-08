@@ -3,6 +3,7 @@
  *  We provide an example of simple initializer that generates points withing a cube.
  */
 
+import * as THREE from "three";
 
 function VoidInitializer ( opts ) {
     this._opts = opts;
@@ -450,88 +451,4 @@ ClothInitializer.prototype.initialize = function ( particleAttributes, toSpawn, 
 
     // mark normals to be updated
     particleAttributes["normal"].needsUpdate = true;
-};
-
-////////////////////////////////////////////////////////////////////////////////
-// Flock
-////////////////////////////////////////////////////////////////////////////////
-
-function FlockInitializer ( opts ) {
-    this._opts = opts;
-    return this;
-}
-
-FlockInitializer.prototype.initializePositions = function ( positions, toSpawn ) {
-    var base_pos = this._opts.position;
-
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
-        var idx = toSpawn[i];
-        var pos = sampleUnitCube().multiplyScalar( 10.0 ).add( base_pos );
-        setElement( idx, positions, pos );
-    }
-    positions.needUpdate = true;
-};
-
-FlockInitializer.prototype.initializeVelocities = function ( velocities, toSpawn ) {
-    var base_vel = this._opts.velocity;
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
-        var idx = toSpawn[i];
-        var v = sampleSphere( base_vel.length() );
-        setElement( idx, velocities, v );
-    }
-    velocities.needUpdate = true;
-};
-
-FlockInitializer.prototype.initializeColors = function ( colors, toSpawn ) {
-    var base_col = this._opts.color;
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
-        var idx = toSpawn[i];
-        var col = base_col;
-        setElement( idx, colors, col );
-    }
-    colors.needUpdate = true;
-};
-
-FlockInitializer.prototype.initializeSizes = function ( sizes, toSpawn ) {
-    var size = this._opts.size;
-
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
-        var idx = toSpawn[i];
-        setElement( idx, sizes, size );
-    }
-    sizes.needUpdate = true;
-};
-
-FlockInitializer.prototype.initializeLifetimes = function ( lifetimes, toSpawn) {
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
-        var idx = toSpawn[i];
-        setElement( idx, lifetimes, Math.INFINITY );
-    }
-    lifetimes.needUpdate = true;
-};
-
-FlockInitializer.prototype.initializeColors = function ( colors, toSpawn ) {
-    var base_col = this._opts.color;
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
-        var idx = toSpawn[i];
-        // ----------- STUDENT CODE BEGIN ------------
-        var col = base_col;
-
-        // ----------- STUDENT CODE END ------------
-        setElement( idx, colors, col );
-    }
-    colors.needUpdate = true;
-};
-
-FlockInitializer.prototype.initialize = function ( particleAttributes, toSpawn ) {
-    // update required values
-    this.initializePositions( particleAttributes.position, toSpawn );
-
-    this.initializeVelocities( particleAttributes.velocity, toSpawn );
-
-    this.initializeColors( particleAttributes.color, toSpawn );
-
-    this.initializeLifetimes( particleAttributes.lifetime, toSpawn );
-
-    this.initializeSizes( particleAttributes.size, toSpawn );
 };

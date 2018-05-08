@@ -10,6 +10,8 @@
 // - initializers and particle engine must work with all the sahder supported attributes
 // - incorporate gui controls
 
+import * as THREE from "three";
+
 // Singleton Engine - we will have one particle engine per application,
 // driving the entire application.
 var ParticleEngine = ParticleEngine || new ( function() {
@@ -64,11 +66,12 @@ var ParticleEngine = ParticleEngine || new ( function() {
         _self._prev_t = _self._cur_t;
         if ( !_self._isRunning ) elapsed = 0.0;
 
-        for ( var i = 0; i < _self._animations.length ; ++i ) {
+        var i;
+        for ( i = 0; i < _self._animations.length ; i++ ) {
             _self._animations[i].update( elapsed * 1000.0 );
         }
 
-        for ( var i = 0 ; i < _self._emitters.length ; ++i ) {
+        for ( i = 0 ; i < _self._emitters.length ; i++ ) {
             _self._emitters[i].update( elapsed );
         }
 
@@ -76,7 +79,7 @@ var ParticleEngine = ParticleEngine || new ( function() {
 
     _self.stop = function () {
         _self._isRunning = false;
-    },
+    };
 
     _self.pause = function () {
         if ( _self._isRunning ) {
@@ -96,11 +99,11 @@ var ParticleEngine = ParticleEngine || new ( function() {
 
     _self.getDrawableParticles = function ( emitter_idx ) {
         return _self._emitters[emitter_idx].getDrawableParticles();
-    }
+    };
 
     _self.getEmitters = function( ) {
         return _self._emitters;
-    }
+    };
 
     return _self;
 })();
@@ -150,7 +153,7 @@ function Emitter ( opts ) {
         }
     }
 
-    if ( this._cloth == true ) {
+    if ( this._cloth === true ) {
         this._maxParticleCount = this._width * this._height;
         this._particlesPerSecond = 1e8 * this._maxParticleCount;
     }
@@ -161,8 +164,10 @@ function Emitter ( opts ) {
     this._particles          = new THREE.BufferGeometry();
     this._initialized        = [];
 
+    var i, j;
+
     // Store indices of available particles - these are not initialized yet
-    for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
+    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
         this._initialized[i] = false;
     }
 
@@ -175,8 +180,8 @@ function Emitter ( opts ) {
         // Since these are zero - initialized, they will appear in the scene.
         // By setting all to be negative infinity we will effectively remove these from rendering.
         // This is also how you "remove" dead particles
-        for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
-            for ( var j = 0 ; j < attributeLength ; ++j ) {
+        for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
+            for ( j = 0 ; j < attributeLength ; ++j ) {
                 attributeArray[ attributeLength * i + j ] = 1e-9;
             }
         }
@@ -185,13 +190,13 @@ function Emitter ( opts ) {
     }
 
     // in case of cloth we need to describe to webGL how to render it.
-    if( this._cloth === true ) {
+    if (this._cloth === true) {
 
         var indices = new Uint16Array( (this._width - 1) * (this._height - 1) * 6 );
         var idx = 0;
-        for ( var i = 0 ; i < this._width - 1 ; i++ ) {
-            for ( var j = 0 ; j < this._height - 1 ; j++ ) {
-                indices[ 6 * idx + 0 ] = j * this._width + i;
+        for ( i = 0 ; i < this._width - 1 ; i++ ) {
+            for ( j = 0 ; j < this._height - 1 ; j++ ) {
+                indices[ 6 * idx     ] = j * this._width + i;
                 indices[ 6 * idx + 1 ] = (j + 1) * this._width + i;
                 indices[ 6 * idx + 2 ] = j * this._width + i + 1;
 
@@ -220,32 +225,29 @@ function Emitter ( opts ) {
     }
 
     return this;
-};
+}
 
 Emitter.prototype.restart = function() {
+    var i, j;
 
-    for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
-
+    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
         this._initialized[i] = 0;
-
     }
 
     for ( var attributeKey in this._particleAttributes ) {
-
         var attribute       = this._particleAttributes[attributeKey];
         var attributeArray  = attribute.array;
         var attributeLength = attribute.itemSize;
 
-        for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
-            for ( var j = 0 ; j < attributeLength ; ++j ) {
+        for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
+            for ( j = 0 ; j < attributeLength ; ++j ) {
                 attributeArray[ attributeLength * i + j ] = 1e-9;
             }
         }
 
         attribute.needsUpdate = true;
-
     }
-}
+};
 
 Emitter.prototype.update = function( delta_t ) {
     // how many particles should we add?
@@ -270,7 +272,7 @@ Emitter.prototype.update = function( delta_t ) {
     if ( this._cloth === true ) {
         this._particles.computeVertexNormals();
     }
-}
+};
 
 
 Emitter.prototype.enableSorting = function( val ) {
@@ -285,7 +287,9 @@ Emitter.prototype.sortParticles = function () {
     var positions  = this._particleAttributes.position;
     var cameraPosition = Renderer._camera.position;
 
-    for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
+    var i, j;
+
+    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
         var currentPosition =  getElement( i, positions );
         this._distances[i] = [cameraPosition.distanceToSquared( currentPosition ),i];
     }
@@ -297,25 +301,25 @@ Emitter.prototype.sortParticles = function () {
         var attributeLength = this._particleAttributes[ attributeKey ].itemSize;
         var attributeArray  = this._particleAttributes[ attributeKey ].array;
 
-        for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
-            for ( var j = 0 ; j < attributeLength ; ++j ) {
+        for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
+            for ( j = 0 ; j < attributeLength ; ++j ) {
                 this._backupArray[4 * i + j ] = attributeArray[ attributeLength * this._distances[i][1] + j ]
             }
         }
 
-        for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
-            for ( var j = 0 ; j < attributeLength ; ++j ) {
+        for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
+            for ( j = 0 ; j < attributeLength ; ++j ) {
                 attributeArray[ attributeLength * i + j ] = this._backupArray[4 * i + j ];
             }
         }
     }
 
-    initialized_cpy = []
-    for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
+    var initialized_cpy = [];
+    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
         initialized_cpy[ i ] = this._initialized[ this._distances[i][1] ];
     }
 
-    for ( var i = 0 ; i < this._maxParticleCount ; ++i ) {
+    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
         this._initialized[ i ] = initialized_cpy[i];
     }
 };

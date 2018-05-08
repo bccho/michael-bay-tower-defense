@@ -1,13 +1,14 @@
+import * as THREE from "three";
 
 var Main = Main || { };
 
-
 // called when the gui params change and we need to update mesh
 Main.particleSystemChangeCallback = function ( InputSettings ) {
+    var i;
 
     // Get rid of an old system
     ParticleEngine.stop();
-    for ( var i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
+    for ( i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
         Scene.removeObject( ParticleEngine.getDrawableParticles( i ) );
     }
     ParticleEngine.removeEmitters();
@@ -49,7 +50,7 @@ Main.particleSystemChangeCallback = function ( InputSettings ) {
     ParticleEngine.start();
 
     // Add the particle system
-    for ( var i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
+    for ( i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
         Scene.addObject( ParticleEngine.getDrawableParticles( i ) );
     }
 

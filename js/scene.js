@@ -5,6 +5,9 @@
 // three.js scene, that will be used in main.js
 
 "use strict";
+
+import * as THREE from "three";
+
 var Scene = Scene || {
     _scene     : undefined,
     _materials : [],
@@ -67,13 +70,13 @@ Scene.removeObject = function ( object ) {
 
 Scene.removeObjects = function ( object ) {
     for ( var i = 0 ; i < Scene._objects.length ; ++i ) {
-        if ( Scene._objects[i] != undefined ) {
+        if ( Scene._objects[i] !== undefined ) {
             Scene._scene.remove( Scene._objects[i] );
         }
     }
 
     Scene._objects = [];
-}
+};
 
 // axis and grid
 Scene.addAxis = function() {

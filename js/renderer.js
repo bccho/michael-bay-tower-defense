@@ -1,6 +1,8 @@
 // This js file abstracts away the rendering aspects of three.js
 // Unless you are interested, do not read into this file.
 
+import * as THREE from "three";
+
 var Renderer = Renderer || {
     // internal variables
     _canvas     : undefined,
@@ -12,8 +14,7 @@ var Renderer = Renderer || {
     _raycaster  : undefined,
     _width      : undefined,
     _height     : undefined,
-    _aspect     : undefined,
-
+    _aspect     : undefined
 };
 
 Renderer.getDims = function() {
@@ -79,7 +80,6 @@ Renderer.onWindowResize = function () {
 
 
 Renderer.update = function () {
-
     ParticleEngine.step();
 
     Renderer._controls.update();
@@ -89,8 +89,7 @@ Renderer.update = function () {
 
 
     requestAnimationFrame( Renderer.update );
-
-}
+};
 
 Renderer.snapShot = function () {
     // get the image data
@@ -105,19 +104,19 @@ Renderer.snapShot = function () {
     // this will force downloading data as an image (rather than open in new window)
     var url = dataURL.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
     window.open( url );
-}
+};
 
 // add event listener that will cause 'I' key to download image
 window.addEventListener( 'keyup', function( event ) {
     // only respond to 'I' key
-    if ( event.which == 73 ) {
+    if ( event.which === 73 ) {
         Renderer.snapShot();
     }
 });
 
 window.addEventListener( 'keyup', function( event ) {
     // only respond to 'Spacebar' key
-    if ( event.which == 32 ) {
+    if ( event.which === 32 ) {
         ParticleEngine.pause();
     }
 });

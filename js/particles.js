@@ -4,6 +4,8 @@
 // Explore pools
 // optimize?
 
+import * as THREE from "three";
+
 var ParticleEngine = ParticleEngine || {
     _particles     : undefined,
     _particleCloud : undefined,

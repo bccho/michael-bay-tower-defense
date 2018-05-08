@@ -1,13 +1,14 @@
+import * as THREE from "three";
 
 var Batch = Batch || { };
 
-
 // called when the gui params change and we need to update mesh
 Batch.particleSystemChangeCallback = function ( InputSettings ) {
+    var i;
 
     // Get rid of an old system
     ParticleEngine.stop();
-    for ( var i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
+    for ( i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
         Scene.removeObject( ParticleEngine.getDrawableParticles( i ) );
     }
     ParticleEngine.removeEmitters();
@@ -49,7 +50,7 @@ Batch.particleSystemChangeCallback = function ( InputSettings ) {
     ParticleEngine.start();
 
     // Add the particle system
-    for ( var i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
+    for ( i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
         Scene.addObject( ParticleEngine.getDrawableParticles( i ) );
     }
 
@@ -63,7 +64,7 @@ Batch.parseUrl = function() {
 
     Batch.selectedSystem = cmds[0].system;
     Batch.cmds = cmds[0];
-}
+};
 
 
 // when HTML is finished loading, do this
@@ -78,7 +79,7 @@ window.onload = function() {
     // Add particle system
     Batch.particleSystemChangeCallback( SystemSettings[Batch.selectedSystem] );
 
-    if( Batch.selectedSystem != 'cloth' ) {
+    if( Batch.selectedSystem !== 'cloth' ) {
         var emitters = ParticleEngine.getEmitters();
         for ( var i = 0 ; i < emitters.length ; i++ ) {
             emitters[i]._material.uniforms.texture.value = new THREE.ImageUtils.loadTexture( 'images/' + Batch.cmds.texture + '.png' );
@@ -87,10 +88,10 @@ window.onload = function() {
             emitters[i]._sorting = (Batch.cmds.sorting === 'true');
 
             var blendType;
-            if ( Batch.cmds.blending == "Normal" ) {
-                var blendType = THREE.NormalBlending;
-            } else if ( Batch.cmds.blending == "Additive" ) {
-                var blendType = THREE.AdditiveBlending;
+            if ( Batch.cmds.blending === "Normal" ) {
+                blendType = THREE.NormalBlending;
+            } else if ( Batch.cmds.blending === "Additive" ) {
+                blendType = THREE.AdditiveBlending;
             } else {
                 console.log( "Blend type unknown!" );
                 return;

@@ -1,5 +1,7 @@
 "use strict";
 
+import * as THREE from "three";
+
 var Gui = Gui || {};
 
 // list of presets available in the GUI
@@ -61,7 +63,7 @@ Gui.toCommandString = function () {
         }
     }
     return url;
-}
+};
 
 Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeCallback ) {
     // create top level controls
@@ -91,10 +93,10 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     gc.blends.onChange( function( value ) {
         var emitters = ParticleEngine.getEmitters();
         var blendType;
-        if ( value == "Normal" ) {
-            var blendType = THREE.NormalBlending;
-        } else if ( value == "Additive" ) {
-            var blendType = THREE.AdditiveBlending;
+        if ( value === "Normal" ) {
+            blendType = THREE.NormalBlending;
+        } else if ( value === "Additive" ) {
+            blendType = THREE.AdditiveBlending;
         } else {
             console.log( "Blend type unknown!" );
             return;
