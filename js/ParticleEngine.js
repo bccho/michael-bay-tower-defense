@@ -10,8 +10,6 @@
 // - initializers and particle engine must work with all the sahder supported attributes
 // - incorporate gui controls
 
-import * as THREE from "three";
-
 // Singleton Engine - we will have one particle engine per application,
 // driving the entire application.
 var ParticleEngine = ParticleEngine || new ( function() {

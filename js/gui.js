@@ -1,7 +1,5 @@
 "use strict";
 
-import * as THREE from "three";
-
 var Gui = Gui || {};
 
 // list of presets available in the GUI

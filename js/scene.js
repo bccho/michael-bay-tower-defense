@@ -6,8 +6,6 @@
 
 "use strict";
 
-import * as THREE from "three";
-
 var Scene = Scene || {
     _scene     : undefined,
     _materials : [],

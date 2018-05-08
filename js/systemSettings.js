@@ -1,5 +1,3 @@
-import * as THREE from "three";
-
 var SystemSettings = SystemSettings || {};
 
 SystemSettings.standardMaterial = new THREE.ShaderMaterial( {

@@ -1,5 +1,3 @@
-import * as THREE from "three";
-
 var Main = Main || { };
 
 // called when the gui params change and we need to update mesh

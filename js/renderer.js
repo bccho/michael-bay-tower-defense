@@ -1,8 +1,6 @@
 // This js file abstracts away the rendering aspects of three.js
 // Unless you are interested, do not read into this file.
 
-import * as THREE from "three";
-
 var Renderer = Renderer || {
     // internal variables
     _canvas     : undefined,

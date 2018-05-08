@@ -1,5 +1,3 @@
-import * as THREE from "three";
-
 var Batch = Batch || { };
 
 // called when the gui params change and we need to update mesh

@@ -3,8 +3,6 @@
  *  We provide an example of simple initializer that generates points withing a cube.
  */
 
-import * as THREE from "three";
-
 function VoidInitializer ( opts ) {
     this._opts = opts;
     return this;
