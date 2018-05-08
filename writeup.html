@@ -1,0 +1,131 @@
+<head>
+    <title> COS426 Assignment 4 &mdash; Animation &mdash; Writeup</title>
+    <link href="css/style.css" type="text/css" rel="stylesheet"/>
+</head>
+
+<body>
+    <script src="js/student.js"> </script>
+    <script src="js/writeup.js"> </script>
+    <div class="top">
+    <div class="main_div">
+
+        <h1> <div class=assignment>COS426 Assignment 4</div>Animation &mdash; Writeup</h1>
+        <div class='selectable'>
+        <h2 id='student'></h2>
+        
+        Features Implemented:
+<ul>
+<li>(1.0) <a href='#Euler'>Euler</a></li>
+<li>(1.0) <a href='#Sphere+source'>Sphere source</a></li>
+<li>(1.0) <a href='#Animated+mesh'>Animated mesh</a></li>
+<li>(1.0) <a href='#Damping'>Damping</a></li>
+<li>(1.0) <a href='#Uniform+distribution'>Uniform distribution</a></li>
+<li>(1.0) <a href='#Ground+plane'>Ground plane</a></li>
+<li>(1.0) <a href='#Sphere+collision'>Sphere collision</a></li>
+<li>(2.0) <a href='#Spring+system'>Spring system</a></li>
+<li>(3.0) <a href='#Your+system'>Your system</a></li>
+<li>(1.0) <a href='#Rendering'>Rendering</a></li>
+<li>(1.0) <a href='#Art'>Art</a></li>
+        </ul></div>
+
+<p><hr><p><a name='Euler'></a><h2>Euler</h2><p><hr><p>
+        I computed the change in velocity (<code>dvdt</code>) by adding together the forces (gravity, attractors,
+        damping) and then I updated the velocity by multipying by <code>delta_t</code>.
+
+<p><hr><p><a name='Sphere+source'></a><h2>Sphere source</h2><p><hr><p>
+        I sampled from the surface of the unit sphere by sampling in the unit cube, rejecting points outside the sphere,
+        and then normalizing to the surface of the sphere. This is the position. I set the velocity to be proportional
+        to the position, plus the base velocity.
+
+        <p><a href="batch.html?system=basic&texture=blank&blending=Normal&depthTest=true&transparent=true&sorting=true&size=full">
+            Sphere source in basic system</a>:
+        <br><img src="images/basic.png"></p>
+
+<p><hr><p><a name='Animated+mesh'></a><h2>Animated mesh</h2><p><hr><p>
+        I sampled uniformly among the faces of the mesh, then sampled uniformly inside each triangular face
+        (based on section 4.2 of http://www.cs.princeton.edu/~funk/tog02.pdf). I initialized the velocities to the
+        base velocity plus a random vector with length 5.0.
+
+        <p><a href="batch.html?system=animated&texture=blank&blending=Normal&depthTest=true&transparent=true&sorting=true&size=full">
+            Animated mesh</a>:
+            <br><img src="images/mesh.png"></p>
+
+<p><hr><p><a name='Damping'></a><h2>Damping</h2><p><hr><p>
+        I added to the velocity change <code>dvdt</code> terms proportional to the velocity and velocity squared,
+        with proportionality constants given by the x and y components of the dampenings vector.
+
+<p><hr><p><a name='Uniform+distribution'></a><h2>Uniform distribution</h2><p><hr><p>
+        I changed the face sampling of the animated mesh so that the probability of choosing a face is proportional
+        to its area. I first computed the areas of all the faces, made a cumulative mass function, then sampled
+        uniformly from 0 to the total area, and used the CMF to choose the face. The rest of the position initialization
+        is the same.
+
+<p><hr><p><a name='Ground+plane'></a><h2>Ground plane</h2><p><hr><p>
+        To detect collisions, I took the dot product between the plane normal vector and the position and compared it
+        to the offset of the plane from the origin. For the sink, I simply used <code>killParticle</code> to kill
+        the particle. For the bounce plane, I decomposed the velocity into normal and tangential velocities and
+        reversed the normal velocity, multiplying by some damping factor. Then, I ensured that the position was above
+        the plane (plus epsilon) so that re-collision would not be detected on the next step.
+
+        <p><a href="batch.html?system=fountainBounce&texture=blank&blending=Normal&depthTest=true&transparent=true&sorting=true&size=full">
+            Fountain with bounce plane</a>:
+            <br><img src="images/bounce.png"></p>
+
+<p><hr><p><a name='Sphere+collision'></a><h2>Sphere collision</h2><p><hr><p>
+        To detect collisions, I compared the distance from the center to the position with the radius. Then, similar
+        to with planes, I used <code>killParticle</code> for the sink and reversed the normal velocity with the
+        damping factor for the bounce sphere. Finally, I ensured that the position was outside the radius (plus
+        epsilon) so that collisions to avoid re-collision.
+
+<p><hr><p><a name='Spring+system'></a><h2>Spring system</h2><p><hr><p>
+        First, I implemented a function to compute the force due to a spring in <code>calcHooke</code>. This implements
+        a Hooke force modulated by a damping force based on the relative velocity. Then, I computed <code>dvdt</code>
+        as before with gravity, attractors, and Hooke forces between neighbors using <code>calcHooke</code>, and used
+        that to update velocities.
+
+        <p><a href="batch.html?system=cloth&texture=blank&blending=Normal&depthTest=true&transparent=true&sorting=true&size=full">
+            Cloth</a>:
+            <br><img src="images/cloth1.png">
+            <br><img src="images/cloth2.png"></p>
+
+<p><hr><p><a name='Your+system'></a><h2>Your system</h2><p><hr><p>
+        I implemented a bird flocking simulation based on the active particle model analyzed in this biophysics paper
+        by Bialek et al. (2012): http://www.pnas.org/content/109/13/4786. Instead of updating velocities based on
+        force calculations, this model updates velocities directly and requires all velocities to be the same in
+        magnitude.
+
+        <p>There are three contributions to the velocity: (1) a distance-independent tendency to tend toward the
+        mean of neighboring birds (the number of neighbors, <code>FlockUpdater.n_neighbors</code>, can be set on
+        creation), (2) a distance-dependent contribution that pushes neighboring birds closer together but does not
+        permit them to become closer than a minimum distance, and (3) a stochastic random component.
+
+        <p>This produces flocking behavior with high pairwise correlations for larger values of <code>n_neighbors</code>
+        but these long-distance correlations are destroyed when <code>n_neighbors</code> is smaller (e.g.
+        <code>n_neighbors = 1</code>). It is interesting to re-run the simulation with differing values of this
+        parameter, and observe the critical point / transition point dynamics in the tendency of the birds to flock.
+
+        <p><a href="batch.html?system=mySystem&texture=blank&blending=Normal&depthTest=true&transparent=true&sorting=true&size=full">
+            Flocking with 3 neighbors</a>:
+            <br><img src="images/flock1.png">
+            <br>Flocking with 5 neighbors:
+            <br><img src="images/flock2.png">
+        </p>
+
+<p><hr><p><a name='Rendering'></a><h2>Rendering</h2><p><hr><p>
+        I multiplied both the color alpha channel and the size of the particle by some factor on each step such that
+        the alpha and size decayed exponentially with some timescale (ideally independent of <code>delta_t</code>).
+
+<p><hr><p><a name='Art'></a><h2>Art</h2><p><hr><p>
+        I made the birds change color based on how close the neighbors are (i.e how "happy" they are). Based on the
+        average distance between neighbors being considered, the color of each bird interpolates between red (far,
+        because they're "unhappy") and yellow (near, because they're "happier"). This makes the birds look a little bit
+        like fireflies in the way that they swarm together and are each differently colored.
+
+        <p>Flocking with 1 neighbor:
+        <br><img src="images/flock3.png">
+        </p>
+
+    </div>
+    </div>
+</body>
+</html>
