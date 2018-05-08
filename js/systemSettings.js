@@ -366,7 +366,7 @@ SystemSettings.mySystem = {
     particleMaterial :  SystemSettings.standardMaterial,
 
     // Initializer
-    initializerFunction : FlockInitializer,
+    initializerFunction : VoidInitializer,
     initializerSettings : {
         position:   new THREE.Vector3(0.0, 0.0, 0.0),
         color:      new THREE.Vector4(1.0, 0.5, 0.0, 1.0),
@@ -375,7 +375,7 @@ SystemSettings.mySystem = {
     },
 
     // Updater
-    updaterFunction : FlockUpdater,
+    updaterFunction : VoidUpdater,
     updaterSettings : {},
 
     // Scene
