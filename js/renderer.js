@@ -78,15 +78,9 @@ Renderer.onWindowResize = function () {
 
 
 Renderer.update = function () {
-    ParticleEngine.step();
-
     Renderer._controls.update();
     Renderer._stats.update();
-
     Renderer._renderer.render( Renderer._scene, Renderer._camera );
-
-
-    requestAnimationFrame( Renderer.update );
 };
 
 Renderer.snapShot = function () {

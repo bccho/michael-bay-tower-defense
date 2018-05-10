@@ -45,7 +45,9 @@ Main.particleSystemChangeCallback = function ( InputSettings ) {
     ParticleEngine.addEmitter ( emitter );
 
     // Add new particle system
-    ParticleEngine.start();
+    //ParticleEngine.start();
+    // start game engine
+    GameEngine.start();
 
     // Add the particle system
     for ( i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
@@ -70,5 +72,5 @@ window.onload = function() {
 
     Renderer.create( Scene, document.getElementById("canvas") );
 
-    Renderer.update();
+    GameEngine.mainLoop();
 };
