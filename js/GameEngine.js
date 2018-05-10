@@ -44,6 +44,10 @@ GameEngine.mainLoop = function() {
 
     ParticleEngine.step(deltaT);
 
+    for (var i = 0; i < this.gameObjects.length; i++) {
+        this.gameObjects[i].update(deltaT);
+    }
+
     Renderer.update();
 
     requestAnimationFrame( this.mainLoop.bind(this) );
