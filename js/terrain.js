@@ -9,6 +9,7 @@ Terrain.initialize = function(kwargs) {
     kwargs = setDefault(kwargs, "unitSize", 20);
     kwargs = setDefault(kwargs, "width", 20);
     kwargs = setDefault(kwargs, "height", 20);
+    kwargs = setDefault(kwargs, "elevationInitializer", function(i, j) { return 0; });
 
     var def_mat = new THREE.MeshLambertMaterial({color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide});
     kwargs = setDefault(kwargs, "material", def_mat);
@@ -18,6 +19,7 @@ Terrain.initialize = function(kwargs) {
     this._width = kwargs.width; // width and height are number of vertices
     this._height = kwargs.height;
     this._material = kwargs.material;
+    this._elevationInitializer = kwargs["elevationInitializer"];
 
     this._offset = new THREE.Vector3(-(this._unitSize * (this._width - 1)) / 2, 0, -(this._unitSize * (this._height - 1)) / 2);
 
@@ -26,7 +28,7 @@ Terrain.initialize = function(kwargs) {
     for (var i = 0; i < this._width; i++) {
         this._elevationMap[i] = [];
         for (var j = 0; j < this._height; j++) {
-            this._elevationMap[i][j] = 0; // TODO: elevation initialization function
+            this._elevationMap[i][j] = this._elevationInitializer(i, j);
         }
     }
 
@@ -87,6 +89,32 @@ Terrain.setElevationGrid = function(i, j, elevation) {
     this._geometry.computeVertexNormals();
 };
 
-// TODO: convert from (x, y) to (i, j)
-// TODO: interpolate elevation
+// Converts from (x, y) world terrain coordinates (world coordinates x and z) to (i, j) grid coordinates
+Terrain.xyToGrid = function(x, y) {
+    x = (x - this._offset.x) / this._unitSize;
+    y = (y - this._offset.z) / this._unitSize;
+    return [x, y];
+};
+
+// Linearly interpolates elevation map at (fractional) grid coordinates (i, j)
+Terrain.interpolateElevation = function(i, j) {
+    // Return undefined if outside elevation map bounds
+    if (0 > i || i > this._width - 1 || 0 > j || j > this._height - 1) return undefined;
+
+    // Find neighbor vertices
+    var i0 = Math.floor(i); var i1 = Math.ceil(i);
+    var j0 = Math.floor(j); var j1 = Math.ceil(j);
+    var frac_i = i - i0; var frac_j = j - j0;
+    var elev0 = lerp(this.getElevationGrid(i0, j0), this.getElevationGrid(i1, j0), frac_i);
+    var elev1 = lerp(this.getElevationGrid(i0, j1), this.getElevationGrid(i1, j1), frac_i);
+    var elev = lerp(elev0, elev1, frac_j);
+    return elev;
+};
+
+Terrain.getElevation = function(x, y) {
+    var i, j;
+    [i, j] = this.xyToGrid(x, y);
+    return this.interpolateElevation(i, j);
+};
+
 // TODO: morph operations on terrain...

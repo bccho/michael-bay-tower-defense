@@ -1,4 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
+// Utility functions for working in the Game Engine                           //
+////////////////////////////////////////////////////////////////////////////////
+
+// takes a prototype and instantiates it in-game
+function create(gameObjectType) {
+    GameEngine.createGameObject(gameObjectType);
+}
+
+// removes a specific instance from the game by reference
+function destroy(gameObjectReference) {
+    GameEngine.destroyGameObject(gameObjectReference);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Utility function to accessing correct element in arrays                    //
 ////////////////////////////////////////////////////////////////////////////////
 function getElement ( i, attrib ) {
@@ -115,4 +129,8 @@ function killParticle ( i, particleAttributes, alive ) {
 function setDefault(dict, key, defaultValue) {
     if (!dict.hasOwnProperty(key)) dict[key] = defaultValue;
     return dict;
+}
+
+function lerp(x0, x1, alpha) {
+    return x0 * (1 - alpha) + x1 * alpha;
 }
