@@ -13,7 +13,7 @@ GameEngine.start = function() {
     this._prev_t = Date.now();
     this._cur_t  = Date.now();
     this._isRunning = true;
-    this._gameObjects = [];
+    this._gameObjects = {};
 
     ParticleEngine.start();
 };
@@ -21,23 +21,30 @@ GameEngine.start = function() {
 // creates game object, adds it to the list of in-game instances, adds to scene, and returns reference
 GameEngine.createGameObject = function(gameObjectType, kwargs) {
     var obj = new gameObjectType(kwargs);
-    this._gameObjects.push(obj);
+
+    if (!(gameObjectType.name in this._gameObjects))   // add list of instances of type
+        this._gameObjects[gameObjectType.name] = [];
+    this._gameObjects[gameObjectType.name].push(obj);  // add instance to correct list
+
     Scene.addObject(obj.getModel());
     return obj;
 };
 
 // removes game object from list of in-game instances, removes from scene, and does not return reference
 GameEngine.destroyGameObject = function(gameObjectRef) {
-    var index = this._gameObjects.indexOf(gameObjectRef);
+    if (!(gameObjectRef.constructor.name in this._gameObjects)) return;
+
+    var index = this._gameObjects[gameObjectRef.constructor.name].indexOf(gameObjectRef);
     if (index > -1) {
-        this._gameObjects.splice(index, 1);
+        this._gameObjects[gameObjectRef.constructor.name].splice(index, 1);
     }
     Scene.removeObject(gameObjectRef.getModel());
 };
 
-//GameEngine.findGameObject = function(gameObjectType) {
-//
-//};
+GameEngine.findGameObject = function(gameObjectType) {
+    if (!(gameObjectType.name in this._gameObjects)) return;
+    var list = this._gameObjects[gameObjectType.name];
+};
 
 GameEngine.mainLoop = function() {
     // determine deltaT
