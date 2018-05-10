@@ -3,8 +3,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // takes a prototype and instantiates it in-game
-function create(gameObjectType) {
-    return GameEngine.createGameObject(gameObjectType);
+function create(gameObjectType, kwargs) {
+    return GameEngine.createGameObject(gameObjectType, kwargs);
 }
 
 // removes a specific instance from the game by reference

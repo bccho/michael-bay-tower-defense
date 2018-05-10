@@ -19,8 +19,8 @@ GameEngine.start = function() {
 };
 
 // creates game object, adds it to the list of in-game instances, adds to scene, and returns reference
-GameEngine.createGameObject = function(gameObject) {
-    var obj = new gameObject();
+GameEngine.createGameObject = function(gameObject, kwargs) {
+    var obj = new gameObject(kwargs);
     this.gameObjects.push(obj);
     Scene.addObject(obj.getModel());
     return obj;
