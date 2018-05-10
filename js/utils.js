@@ -1,4 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
+// Utility functions for working in the Game Engine                           //
+////////////////////////////////////////////////////////////////////////////////
+
+// takes a prototype and instantiates it in-game
+function create(gameObjectType) {
+    GameEngine.createGameObject(gameObjectType);
+}
+
+// removes a specific instance from the game by reference
+function destroy(gameObjectReference) {
+    GameEngine.destroyGameObject(gameObjectReference);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Utility function to accessing correct element in arrays                    //
 ////////////////////////////////////////////////////////////////////////////////
 function getElement ( i, attrib ) {

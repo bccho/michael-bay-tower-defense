@@ -19,8 +19,6 @@ var ParticleEngine = ParticleEngine || new ( function() {
     _self._emitters   = [];
     _self._meshes     = [];
     _self._animations = [];
-    _self._prev_t     = undefined;
-    _self._cur_t      = undefined;
     _self._isRunning  = false;
 
     _self.addEmitter = function ( emitter ) {
@@ -52,25 +50,17 @@ var ParticleEngine = ParticleEngine || new ( function() {
     };
 
     _self.start = function () {
-        _self._prev_t = Date.now();
-        _self._cur_t  = Date.now();
         _self._isRunning = true;
     };
 
-    _self.step = function () {
-        // deal with time
-        _self._cur_t  = Date.now();
-        var elapsed  = (_self._cur_t - _self._prev_t) / 1000.0;
-        _self._prev_t = _self._cur_t;
-        if ( !_self._isRunning ) elapsed = 0.0;
-
+    _self.step = function (deltaT) {
         var i;
         for ( i = 0; i < _self._animations.length ; i++ ) {
-            _self._animations[i].update( elapsed * 1000.0 );
+            _self._animations[i].update( deltaT * 1000.0 );
         }
 
         for ( i = 0 ; i < _self._emitters.length ; i++ ) {
-            _self._emitters[i].update( elapsed );
+            _self._emitters[i].update( deltaT );
         }
 
     };
