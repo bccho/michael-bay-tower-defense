@@ -15,6 +15,8 @@ function GameObject(kwargs) {
             this._position = value;
         } else if (option === "angle") {
             this._angle = value;
+        } else if (option === "vangle") {
+            this._vangle = value;
         } else if (option === "meshes") {
             // Make new THREE.Group with meshes
             this._model = new THREE.Group();

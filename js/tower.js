@@ -50,7 +50,7 @@ function SimpleTower() {
     tower_body.position.set(0.0, 10.0, 0.0);
     tower_arm.position.set(7.5, 17.5, 0.0);
 
-    var kwargs = {"body_meshes": [tower_body], "arm_meshes": [tower_arm]};
+    var kwargs = {body_meshes: [tower_body], arm_meshes: [tower_arm]};
     Tower.call(this, kwargs);
 
     return this;
