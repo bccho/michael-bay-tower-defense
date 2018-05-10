@@ -1,7 +1,4 @@
 function Tower (opts) {
-    opts = setDefault(opts, "heightAboveGround", 0);
-    var obj = Object.create(new GameObject(opts));
-
     // Parse options
     for (var option in opts) {
         var value = opts[option];
@@ -12,5 +9,10 @@ function Tower (opts) {
         }
     }
 
-    return obj;
+    opts = setDefault(opts, "heightAboveGround", 0);
+    GameObject.call(this, opts);
+
+    return this;
 }
+
+Tower.prototype = new GameObject();
