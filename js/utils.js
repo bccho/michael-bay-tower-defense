@@ -116,3 +116,7 @@ function setDefault(dict, key, defaultValue) {
     if (!dict.hasOwnProperty(key)) dict[key] = defaultValue;
     return dict;
 }
+
+function lerp(x0, x1, alpha) {
+    return x0 * (1 - alpha) + x1 * alpha;
+}
