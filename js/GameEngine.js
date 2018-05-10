@@ -5,15 +5,32 @@ var GameEngine = GameEngine || new ( function() {
     var _self = this;
 
     // Instance variables - global delta time, active instances
-    _self._prev_t     = undefined;
-    _self._cur_t      = undefined;
-    _self._isRunning  = false;
+    _self._prev_t      = undefined;
+    _self._cur_t       = undefined;
+    _self._isRunning   = false;
+    _self._gameObjects = [];
 
     _self.start = function() {
         _self._prev_t = Date.now();
         _self._cur_t  = Date.now();
         _self._isRunning = true;
+        _self.gameObjects = [];
+
         ParticleEngine.start();
+    };
+
+    // creates game object, adds it to the list of in-game instances, adds to scene, and returns reference
+    _self.createGameObject = function(gameObject) {
+        var obj = new gameObject();
+        _self.gameObjects.push(obj);
+        // add to scene
+        return obj;
+    };
+
+    // removes game object from list of in-game instances, removes from scene, and does not return reference
+    _self.deleteGameObject = function(gameObject) {
+        // remove from list
+        // remove from scene
     };
 
     _self.mainLoop = function() {
