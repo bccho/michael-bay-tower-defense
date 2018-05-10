@@ -1,5 +1,5 @@
-function GameObject(opts) {
-    opts = opts || {};
+function GameObject(kwargs) {
+    kwargs = kwargs || {};
 
     // Initialize member variables
     this._position = new THREE.Vector3(); // global position
@@ -9,8 +9,8 @@ function GameObject(opts) {
     this._heightAboveGround = undefined; // if not undefined, pins position relative to ground level
 
     // Parse options
-    for (var option in opts) {
-        var value = opts[option];
+    for (var option in kwargs) {
+        var value = kwargs[option];
         if (option === "position") {
             this._position = value;
         } else if (option === "angle") {

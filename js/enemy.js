@@ -1,9 +1,9 @@
-function Enemy(opts) {
-    opts = opts || {};
+function Enemy(kwargs) {
+    kwargs = kwargs || {};
 
     // Parse options
-    for (var option in opts) {
-        var value = opts[option];
+    for (var option in kwargs) {
+        var value = kwargs[option];
         if (option === "BLAH") {
             obj._BLAH = value;
         } else {
@@ -11,8 +11,8 @@ function Enemy(opts) {
         }
     }
 
-    opts = setDefault(opts, "heightAboveGround", 0);
-    GameObject.call(this, opts);
+    kwargs = setDefault(kwargs, "heightAboveGround", 0);
+    GameObject.call(this, kwargs);
 
     return this;
 }

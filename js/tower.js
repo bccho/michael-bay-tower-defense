@@ -1,36 +1,36 @@
-function Tower(opts) {
-    opts = opts || {};
+function Tower(kwargs) {
+    kwargs = kwargs || {};
 
     this._body_model = undefined;
     this._arm_model = undefined;
 
     // Parse options
     var i;
-    for (var option in opts) {
-        var value = opts[option];
+    for (var option in kwargs) {
+        var value = kwargs[option];
         if (option === "body_meshes") {
             this._body_model = new THREE.Group();
             for (i = 0; i < value.length; i++) {
                 this._body_model.add(value[i]);
             }
-            delete opts.body_meshes;
+            delete kwargs.body_meshes;
         } else if (option === "arm_meshes") {
             this._arm_model = new THREE.Group();
             for (i = 0; i < value.length; i++) {
                 this._arm_model.add(value[i]);
             }
-            delete opts.arm_meshes;
+            delete kwargs.arm_meshes;
         } else {
             console.log("Unknown option " + option + "! Make sure to register it!");
         }
     }
 
-    opts = setDefault(opts, "heightAboveGround", 0);
-    opts.meshes = [];
-    if (this._body_model !== undefined) opts.meshes.push(this._body_model);
-    if (this._arm_model  !== undefined) opts.meshes.push(this._arm_model);
+    kwargs = setDefault(kwargs, "heightAboveGround", 0);
+    kwargs.meshes = [];
+    if (this._body_model !== undefined) kwargs.meshes.push(this._body_model);
+    if (this._arm_model  !== undefined) kwargs.meshes.push(this._arm_model);
 
-    GameObject.call(this, opts);
+    GameObject.call(this, kwargs);
 
     return this;
 }
@@ -50,8 +50,8 @@ function SimpleTower() {
     tower_body.position.set(0.0, 10.0, 0.0);
     tower_arm.position.set(7.5, 17.5, 0.0);
 
-    var opts = {"body_meshes": [tower_body], "arm_meshes": [tower_arm]};
-    Tower.call(this, opts);
+    var kwargs = {"body_meshes": [tower_body], "arm_meshes": [tower_arm]};
+    Tower.call(this, kwargs);
 
     return this;
 }
