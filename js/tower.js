@@ -40,3 +40,20 @@ Tower.prototype = new GameObject();
 Tower.prototype.setArmAngle = function(angle) {
     this._arm_model.rotation.y = angle;
 };
+
+
+
+function SimpleTower() {
+    var phong = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
+    var tower_body = new THREE.Mesh(new THREE.BoxGeometry(10, 20, 10), phong);
+    var tower_arm = new THREE.Mesh(new THREE.BoxGeometry(20, 5, 5), phong);
+    tower_body.position.set(0.0, 10.0, 0.0);
+    tower_arm.position.set(7.5, 17.5, 0.0);
+
+    var opts = {"body_meshes": [tower_body], "arm_meshes": [tower_arm]};
+    Tower.call(this, opts);
+
+    return this;
+}
+
+SimpleTower.prototype = new Tower();
