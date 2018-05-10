@@ -2,6 +2,7 @@
 function Tower(kwargs) {
     kwargs = kwargs || {};
 
+    // Initialize member variables
     this._body_model = undefined;
     this._arm_model = undefined;
 
@@ -42,6 +43,10 @@ Tower.prototype.setArmAngle = function(angle) {
     this._arm_model.rotation.y = angle;
 };
 
+Tower.prototype.getArmAngle = function() {
+    return this._arm_model.rotation.y;
+};
+
 
 // Simple tower for quick and dirty testing. Inherits from Tower
 function SimpleTower() {
@@ -49,7 +54,7 @@ function SimpleTower() {
     var tower_body = new THREE.Mesh(new THREE.BoxGeometry(10, 20, 10), phong);
     var tower_arm = new THREE.Mesh(new THREE.BoxGeometry(20, 5, 5), phong);
     tower_body.position.set(0.0, 10.0, 0.0);
-    tower_arm.position.set(7.5, 17.5, 0.0);
+    tower_arm.position.set(7.5, 15.0, 0.0);
 
     var kwargs = {body_meshes: [tower_body], arm_meshes: [tower_arm]};
     Tower.call(this, kwargs);
