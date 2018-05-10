@@ -23,14 +23,17 @@ var GameEngine = GameEngine || new ( function() {
     _self.createGameObject = function(gameObject) {
         var obj = new gameObject();
         _self.gameObjects.push(obj);
-        // add to scene
+        Scene.add(obj.getModel());
         return obj;
     };
 
     // removes game object from list of in-game instances, removes from scene, and does not return reference
-    _self.deleteGameObject = function(gameObject) {
-        // remove from list
-        // remove from scene
+    _self.destroyGameObject = function(gameObject) {
+        var index = _self.gameObjects.indexOf(gameObject);
+        if (index > -1) {
+            _self.gameObjects.splice(index, 1);
+        }
+        Scene.removeObject(gameObject.getModel());
     };
 
     _self.mainLoop = function() {
