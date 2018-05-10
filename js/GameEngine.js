@@ -13,27 +13,31 @@ GameEngine.start = function() {
     this._prev_t = Date.now();
     this._cur_t  = Date.now();
     this._isRunning = true;
-    this.gameObjects = [];
+    this._gameObjects = [];
 
     ParticleEngine.start();
 };
 
 // creates game object, adds it to the list of in-game instances, adds to scene, and returns reference
-GameEngine.createGameObject = function(gameObject, kwargs) {
-    var obj = new gameObject(kwargs);
-    this.gameObjects.push(obj);
+GameEngine.createGameObject = function(gameObjectType, kwargs) {
+    var obj = new gameObjectType(kwargs);
+    this._gameObjects.push(obj);
     Scene.addObject(obj.getModel());
     return obj;
 };
 
 // removes game object from list of in-game instances, removes from scene, and does not return reference
-GameEngine.destroyGameObject = function(gameObject) {
-    var index = this.gameObjects.indexOf(gameObject);
+GameEngine.destroyGameObject = function(gameObjectRef) {
+    var index = this._gameObjects.indexOf(gameObjectRef);
     if (index > -1) {
-        this.gameObjects.splice(index, 1);
+        this._gameObjects.splice(index, 1);
     }
-    Scene.removeObject(gameObject.getModel());
+    Scene.removeObject(gameObjectRef.getModel());
 };
+
+//GameEngine.findGameObject = function(gameObjectType) {
+//
+//};
 
 GameEngine.mainLoop = function() {
     // determine deltaT
