@@ -122,6 +122,109 @@ SphereInitializer.prototype.initialize = function ( particleAttributes, toSpawn 
     this.initializeSizes( particleAttributes.size, toSpawn );
 };
 
+// Explosion system
+function ExplosionInitializer ( opts ) {
+    this._opts = opts;
+    return this;
+}
+
+ExplosionInitializer.prototype.initializePositions = function ( positions, toSpawn) {
+    var base = this._opts.sphere;
+    var base_pos = new THREE.Vector3( base.x, base.y, base.z );
+    var r   = base.w;
+    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+        var idx = toSpawn[i];
+        // position = random sphere of positions + base position
+        var pos = sampleSphere(r);
+        pos.add(base_pos);
+
+        setElement( idx, positions, pos );
+
+    }
+    positions.needUpdate = true;
+};
+
+ExplosionInitializer.prototype.initializeVelocities = function ( velocities, dampenings, positions, toSpawn ) {
+    var base_vel = this._opts.velocity;
+    var explosionSpeed = this._opts.explosionSpeed;
+    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+        var idx = toSpawn[i];
+        // velocity = position + base velocity
+        var pos = getElement( idx, positions );
+        var vel = pos.clone().multiplyScalar(explosionSpeed);
+        vel.add(base_vel);
+
+        setElement( idx, velocities, vel );
+        var damp = new THREE.Vector3(this._opts.damping.x,this._opts.damping.y,0);
+        setElement( idx, dampenings, damp);
+    }
+    velocities.needUpdate = true;
+};
+
+ExplosionInitializer.prototype.initializeColors = function ( colors, toSpawn ) {
+    var base_col = this._opts.baseColor;
+    var mag_col = this._opts.magColor;
+    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+        var idx = toSpawn[i];
+        // ----------- STUDENT CODE BEGIN ------------
+        var alphaR = base_col.x;
+        var alphaG = base_col.y;
+        var alphaB = base_col.z;
+
+        var magR = mag_col.x;
+        var magG = mag_col.y;
+        var magB = mag_col.z;
+
+        var r = magR * ((1 - alphaR) * Math.random() + alphaR);
+        var g = magG * ((1 - alphaG) * Math.random() + alphaG);
+        var b = magB * ((1 - alphaB) * Math.random() + alphaB);
+
+        var col = new THREE.Vector4(r, g, b, 1.0);
+
+        // ----------- STUDENT CODE END ------------
+        setElement( idx, colors, col );
+    }
+    colors.needUpdate = true;
+};
+
+ExplosionInitializer.prototype.initializeSizes = function ( sizes, toSpawn ) {
+    // debugger;
+    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+        var idx = toSpawn[i];
+        // ----------- STUDENT CODE BEGIN ------------
+        var size = this._opts.size;
+        // ----------- STUDENT CODE END ------------
+        setElement( idx, sizes, size );
+    }
+    sizes.needUpdate = true;
+};
+
+ExplosionInitializer.prototype.initializeLifetimes = function ( lifetimes, toSpawn ) {
+
+    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+        var idx = toSpawn[i];
+        // ----------- STUDENT CODE BEGIN ------------
+        var lifetime = this._opts.lifetime;
+
+        // ----------- STUDENT CODE END ------------
+        setElement( idx, lifetimes, lifetime );
+    }
+    lifetimes.needUpdate = true;
+};
+
+ExplosionInitializer.prototype.initialize = function ( particleAttributes, toSpawn ) {
+
+    // update required values
+    this.initializePositions( particleAttributes.position, toSpawn );
+
+    this.initializeVelocities( particleAttributes.velocity,  particleAttributes.dampening, particleAttributes.position, toSpawn );
+
+    this.initializeColors( particleAttributes.color, toSpawn );
+
+    this.initializeLifetimes( particleAttributes.lifetime, toSpawn );
+
+    this.initializeSizes( particleAttributes.size, toSpawn );
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////
