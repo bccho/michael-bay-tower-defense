@@ -20,13 +20,16 @@ var ParticleEngine = ParticleEngine || new ( function() {
     _self._meshes     = [];
     _self._animations = [];
     _self._isRunning  = false;
+    _self._emitterCreated = []; // time of creation of emiiter
 
     _self.addEmitter = function ( emitter ) {
         _self._emitters.push( emitter );
+        _self._emitterCreated.push(Date.now());
     };
 
     _self.removeEmitters = function() {
         _self._emitters = [];
+        _self._emitterCreated = [];
     };
 
     _self.addMesh = function ( mesh ) {
@@ -60,7 +63,24 @@ var ParticleEngine = ParticleEngine || new ( function() {
         }
 
         for ( i = 0 ; i < _self._emitters.length ; i++ ) {
-            _self._emitters[i].update( deltaT );
+            var currEmitter = _self._emitters[i];
+            currEmitter.update( deltaT );
+            if (currEmitter._lifespan !== undefined)
+            {
+                if (Date.now() - _self._emitterCreated[i] > currEmitter._lifespan)
+                {
+                    // remove the current emitter
+                    const index = _self._emitters.indexOf(currEmitter);
+                    currEmitter.kill();
+
+                    if (index !== -1)
+                    {
+                        _self._emitters.splice(index, 1);
+                        _self._emitterCreated.splice(index, 1);
+                    }
+                }
+            }
+
         }
 
     };
@@ -106,6 +126,7 @@ function Emitter ( opts ) {
     this._cloth                = false;
     this._width                = undefined;
     this._height               = undefined;
+    this._lifespan             = undefined;
     this._attributeInformation = {
         position:      3,
         velocity:      3,
@@ -136,6 +157,8 @@ function Emitter ( opts ) {
             this._width = value;
         } else if ( option === "height" ) {
             this._height = value;
+        } else if ( option === "lifespan") {
+            this._lifespan = value;
         } else {
             console.log( "Unknown option " + option + "! Make sure to register it!" )
         }
@@ -325,4 +348,9 @@ Emitter.prototype.getSpawnable = function ( toAdd ) {
 
     return toSpawn;
 };
+
+Emitter.prototype.kill = function ()
+{
+    Scene.removeObject( this.getDrawableParticles() )
+}
 

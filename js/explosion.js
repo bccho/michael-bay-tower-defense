@@ -12,6 +12,7 @@ function Explosion(position, kwargs)
     kwargs = setDefault(kwargs, "size", 6);
     kwargs = setDefault(kwargs, "maxParticles", 10000);
     kwargs = setDefault(kwargs, "particleFreq", 5000);
+    kwargs = setDefault(kwargs, "explosionLifespan", 500);
 
 
 
@@ -45,6 +46,7 @@ function Explosion(position, kwargs)
         update: updater,                      // updater object
         material: SystemSettings.standardMaterial,
         cloth: SystemSettings.standardMaterial,
+        lifespan: kwargs.explosionLifespan,
         width: 20,
         height: 20,
     });
