@@ -39,11 +39,12 @@ function GameObject(kwargs) {
 
 GameObject.prototype.update = function() {
     if (this._heightAboveGround !== undefined) { // object is pinned to some height above ground
-        this._position.y = this._heightAboveGround; // TODO: look up terrain height
+        var elev = Terrain.getElevation(this._position.x, this._position.z);
+        this._position.y = elev + this._heightAboveGround;
     }
 
     // Update model with position and rotation
-    this._model.position = this._position;
+    this._model.position.copy(this._position);
     this._model.rotation.y = this._angle;
     // TODO: vertical angle
 };
