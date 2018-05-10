@@ -6,7 +6,7 @@ var GameEngine = GameEngine || {
     _prev_t: undefined,
     _cur_t: undefined,
     _isRunning: false,
-    _gameObjects: []
+    _gameObjects: [],
 };
 
 GameEngine.start = function() {
@@ -14,6 +14,7 @@ GameEngine.start = function() {
     this._cur_t  = Date.now();
     this._isRunning = true;
     this.gameObjects = [];
+    this.emitters = [];
 
     ParticleEngine.start();
 };
@@ -24,6 +25,35 @@ GameEngine.createGameObject = function(gameObject, kwargs) {
     this.gameObjects.push(obj);
     Scene.addObject(obj.getModel());
     return obj;
+};
+
+GameEngine.createEmitter = function (emitter) {
+    ParticleEngine.addEmitter(emitter);
+    for ( i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
+        if (ParticleEngine._emitters[i].alive === false)
+        {
+            continue;
+        }
+        Scene.addObject( ParticleEngine.getDrawableParticles( i ) );
+    }
+    this.emitters.push(emitter);
+};
+
+GameEngine.removeDeadEmitters = function () {
+    for (var i = 0; i < this.emitters.length; i++)
+    {
+        var currEmitter = this.emitters[i];
+        if (currEmitter.alive)
+        {
+            continue;
+        }
+
+        var index = this.emitters.indexOf(currEmitter);
+        if (index > -1)
+        {
+            this.emitters.splice(index, 1);
+        }
+    }
 };
 
 // removes game object from list of in-game instances, removes from scene, and does not return reference

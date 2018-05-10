@@ -146,11 +146,14 @@ ExplosionInitializer.prototype.initializePositions = function ( positions, toSpa
 
 ExplosionInitializer.prototype.initializeVelocities = function ( velocities, dampenings, positions, toSpawn ) {
     var base_vel = this._opts.velocity;
+    var base_sphere = this._opts.sphere;
+    var base_pos = new THREE.Vector3(base_sphere.x, base_sphere.y, base_sphere.z);
+
     var explosionSpeed = this._opts.explosionSpeed;
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         var idx = toSpawn[i];
         // velocity = position + base velocity
-        var pos = getElement( idx, positions );
+        var pos = getElement( idx, positions ).sub(base_pos);
         var vel = pos.clone().multiplyScalar(explosionSpeed);
         vel.add(base_vel);
 

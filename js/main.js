@@ -22,6 +22,7 @@ Main.particleSystemChangeCallback = function ( InputSettings ) {
     }
 
     // Create new system
+    // debugger;
     var initializer = new InputSettings.initializerFunction ( InputSettings.initializerSettings );
 
     var updater     = new InputSettings.updaterFunction ( InputSettings.updaterSettings );

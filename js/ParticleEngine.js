@@ -21,6 +21,7 @@ var ParticleEngine = ParticleEngine || new ( function() {
     _self._animations = [];
     _self._isRunning  = false;
     _self._emitterCreated = []; // time of creation of emiiter
+    _self.alive = true;
 
     _self.addEmitter = function ( emitter ) {
         _self._emitters.push( emitter );
@@ -351,6 +352,9 @@ Emitter.prototype.getSpawnable = function ( toAdd ) {
 
 Emitter.prototype.kill = function ()
 {
-    Scene.removeObject( this.getDrawableParticles() )
+    this.alive = false;
+    Scene.removeObject( this.getDrawableParticles() );
+    this._drawableParticles = [];
+
 }
 
