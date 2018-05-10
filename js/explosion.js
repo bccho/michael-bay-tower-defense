@@ -17,6 +17,7 @@ function Explosion(position, kwargs)
 
 
 
+
     var initalizeSettings = {
         sphere: new THREE.Vector4(position.x, position.y, position.z, 1.0),
         baseColor: kwargs.baseColor,
