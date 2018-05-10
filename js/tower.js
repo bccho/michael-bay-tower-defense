@@ -22,8 +22,6 @@ function Tower(kwargs) {
                 this._arm_model.add(value[i]);
             }
             delete kwargs.arm_meshes;
-        } else {
-            console.log("Unknown option " + option + "! Make sure to register it!");
         }
     }
 

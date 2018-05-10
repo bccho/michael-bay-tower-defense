@@ -10,8 +10,7 @@ function Enemy(kwargs) {
         var value = kwargs[option];
         if (option === "velocity") {
             this._velocity = value;
-        } else {
-            console.log("Unknown option " + option + "! Make sure to register it!");
+            delete kwargs.velocity;
         }
     }
 
