@@ -40,6 +40,7 @@ function GameObject(kwargs) {
 GameObject.prototype.update = function() {
     if (this._heightAboveGround !== undefined) { // object is pinned to some height above ground
         var elev = Terrain.getElevation(this._position.x, this._position.z);
+        if (elev === undefined) elev = 0;
         this._position.y = elev + this._heightAboveGround;
     }
 
