@@ -1,3 +1,6 @@
+// Terrain is a singleton object that keeps track of terrain, initializes and updates the mesh,
+// and enables elevation queries.
+
 var Terrain = Terrain || {};
 
 Terrain.initialize = function(kwargs) {
@@ -10,6 +13,7 @@ Terrain.initialize = function(kwargs) {
     var def_mat = new THREE.MeshLambertMaterial({color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide});
     kwargs = setDefault(kwargs, "material", def_mat);
 
+    // Member attributes
     this._unitSize = kwargs.unitSize;
     this._width = kwargs.width; // width and height are number of vertices
     this._height = kwargs.height;
@@ -26,7 +30,7 @@ Terrain.initialize = function(kwargs) {
         }
     }
 
-    // Create mesh: vertex positions
+    // Create mesh: vertex positions, based on ClothInitializer
     this._positions = new THREE.BufferAttribute(new Float32Array(this._width * this._height * 3), 3);
     var idx = 0;
     for (i = 0; i < this._width; i++) {
@@ -38,7 +42,7 @@ Terrain.initialize = function(kwargs) {
         }
     }
 
-    // Create mesh: faces
+    // Create mesh: faces, based on Emitter for cloth
     var indices = new Uint16Array( (this._width - 1) * (this._height - 1) * 6 );
     idx = 0;
     for (i = 0; i < this._width - 1; i++) {
@@ -68,6 +72,7 @@ Terrain.getModel = function() {
     return this._model;
 };
 
+// Grid elevation get and set operations; (i, j) are integer grid coordinates
 Terrain.getElevationGrid = function(i, j) {
     return this._elevationMap[i][j];
 };

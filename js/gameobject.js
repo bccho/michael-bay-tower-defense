@@ -1,3 +1,7 @@
+// General base class for independent object in game.
+// Keeps track of meshes and object transforms
+// Exposes update() for step updating, and getModel() to get model to add to scene for rendering
+
 function GameObject(kwargs) {
     kwargs = kwargs || {};
 

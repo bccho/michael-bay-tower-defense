@@ -1,3 +1,4 @@
+// Tower inherits from GameObject
 function Tower(kwargs) {
     kwargs = kwargs || {};
 
@@ -42,7 +43,7 @@ Tower.prototype.setArmAngle = function(angle) {
 };
 
 
-
+// Simple tower for quick and dirty testing. Inherits from Tower
 function SimpleTower() {
     var phong = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
     var tower_body = new THREE.Mesh(new THREE.BoxGeometry(10, 20, 10), phong);
