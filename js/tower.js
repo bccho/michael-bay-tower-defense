@@ -1,11 +1,14 @@
-function Tower (opts) {
+function Tower(opts) {
+    opts = opts || {};
+
+    this._body_model = undefined;
+    this._arm_model = undefined;
+
     // Parse options
     var i;
     for (var option in opts) {
         var value = opts[option];
-        if (option === "BLAH") {
-            obj._BLAH = value;
-        } else if (option === "body_meshes") {
+        if (option === "body_meshes") {
             this._body_model = new THREE.Group();
             for (i = 0; i < value.length; i++) {
                 this._body_model.add(value[i]);
@@ -23,7 +26,10 @@ function Tower (opts) {
     }
 
     opts = setDefault(opts, "heightAboveGround", 0);
-    opts.meshes = [this._body_model, this._arm_model];
+    opts.meshes = [];
+    if (this._body_model !== undefined) opts.meshes.push(this._body_model);
+    if (this._arm_model  !== undefined) opts.meshes.push(this._arm_model);
+
     GameObject.call(this, opts);
 
     return this;

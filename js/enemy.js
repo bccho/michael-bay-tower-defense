@@ -1,4 +1,6 @@
-function Enemy (opts) {
+function Enemy(opts) {
+    opts = opts || {};
+
     // Parse options
     for (var option in opts) {
         var value = opts[option];

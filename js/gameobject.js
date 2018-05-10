@@ -1,4 +1,6 @@
-function GameObject (opts) {
+function GameObject(opts) {
+    opts = opts || {};
+
     // Initialize member variables
     this._position = new THREE.Vector3(); // global position
     this._angle = 0; // global horizontal angle
