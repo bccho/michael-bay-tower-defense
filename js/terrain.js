@@ -9,6 +9,7 @@ Terrain.initialize = function(kwargs) {
     kwargs = setDefault(kwargs, "unitSize", 20);
     kwargs = setDefault(kwargs, "width", 20);
     kwargs = setDefault(kwargs, "height", 20);
+    kwargs = setDefault(kwargs, "elevationInitializer", function(i, j) { return 0; });
 
     var def_mat = new THREE.MeshLambertMaterial({color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide});
     kwargs = setDefault(kwargs, "material", def_mat);
@@ -18,6 +19,7 @@ Terrain.initialize = function(kwargs) {
     this._width = kwargs.width; // width and height are number of vertices
     this._height = kwargs.height;
     this._material = kwargs.material;
+    this._elevationInitializer = kwargs["elevationInitializer"];
 
     this._offset = new THREE.Vector3(-(this._unitSize * (this._width - 1)) / 2, 0, -(this._unitSize * (this._height - 1)) / 2);
 
@@ -26,7 +28,7 @@ Terrain.initialize = function(kwargs) {
     for (var i = 0; i < this._width; i++) {
         this._elevationMap[i] = [];
         for (var j = 0; j < this._height; j++) {
-            this._elevationMap[i][j] = 0; // TODO: elevation initialization function
+            this._elevationMap[i][j] = this._elevationInitializer(i, j);
         }
     }
 
