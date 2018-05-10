@@ -4,7 +4,7 @@
 
 // takes a prototype and instantiates it in-game
 function create(gameObjectType) {
-    GameEngine.createGameObject(gameObjectType);
+    return GameEngine.createGameObject(gameObjectType);
 }
 
 // removes a specific instance from the game by reference

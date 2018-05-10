@@ -22,7 +22,7 @@ GameEngine.start = function() {
 GameEngine.createGameObject = function(gameObject) {
     var obj = new gameObject();
     this.gameObjects.push(obj);
-    Scene.add(obj.getModel());
+    Scene.addObject(obj.getModel());
     return obj;
 };
 
