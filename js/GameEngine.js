@@ -13,16 +13,16 @@ GameEngine.start = function() {
     this._prev_t = Date.now();
     this._cur_t  = Date.now();
     this._isRunning = true;
-    this.gameObjects = [];
-    this.emitters = [];
+    this._gameObjects = [];
+    this._emitters = [];
 
     ParticleEngine.start();
 };
 
 // creates game object, adds it to the list of in-game instances, adds to scene, and returns reference
-GameEngine.createGameObject = function(gameObject, kwargs) {
-    var obj = new gameObject(kwargs);
-    this.gameObjects.push(obj);
+GameEngine.createGameObject = function(gameObjectType, kwargs) {
+    var obj = new gameObjectType(kwargs);
+    this._gameObjects.push(obj);
     Scene.addObject(obj.getModel());
     return obj;
 };
@@ -40,30 +40,34 @@ GameEngine.createEmitter = function (emitter) {
 };
 
 GameEngine.removeDeadEmitters = function () {
-    for (var i = 0; i < this.emitters.length; i++)
+    for (var i = 0; i < this._emitters.length; i++)
     {
-        var currEmitter = this.emitters[i];
+        var currEmitter = this._emitters[i];
         if (currEmitter.alive)
         {
             continue;
         }
 
-        var index = this.emitters.indexOf(currEmitter);
+        var index = this._emitters.indexOf(currEmitter);
         if (index > -1)
         {
-            this.emitters.splice(index, 1);
+            this._emitters.splice(index, 1);
         }
     }
 };
 
 // removes game object from list of in-game instances, removes from scene, and does not return reference
-GameEngine.destroyGameObject = function(gameObject) {
-    var index = this.gameObjects.indexOf(gameObject);
+GameEngine.destroyGameObject = function(gameObjectRef) {
+    var index = this._gameObjects.indexOf(gameObjectRef);
     if (index > -1) {
-        this.gameObjects.splice(index, 1);
+        this._gameObjects.splice(index, 1);
     }
-    Scene.removeObject(gameObject.getModel());
+    Scene.removeObject(gameObjectRef.getModel());
 };
+
+//GameEngine.findGameObject = function(gameObjectType) {
+//
+//};
 
 GameEngine.mainLoop = function() {
     // determine deltaT
