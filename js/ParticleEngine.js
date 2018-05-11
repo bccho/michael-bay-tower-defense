@@ -1,14 +1,4 @@
-var ParticleEngine = ParticleEngine || new ( function() {
-    var _self      = this;
-
-    // Instance variables - list of emitters, and global delta time
-    _self._animations = [];
-
-    return _self;
-})();
-
 function Emitter ( opts ) {
-    // console.log ( "Emiiter", this );
     // initialize some base variables needed by emitter, that we will extract from options
     this._maxParticleCount     = undefined;
     this._particlesPerSecond   = undefined;
