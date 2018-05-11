@@ -124,6 +124,7 @@ AnimatedGameObject.prototype.stop = function() {
 
 AnimatedGameObject.prototype.update = function(deltaT) {
     for (var i = 0; i < this._animations.length; i++) {
+        if (!this._animations[i].isPlaying) continue;
         this._animations[i].update(deltaT * 1000.0);
     }
 

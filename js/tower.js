@@ -62,10 +62,10 @@ function SimpleTower() {
 
 SimpleTower.prototype = new Tower();
 
-SimpleTower.prototype.update = function() {
+SimpleTower.prototype.update = function(deltaT) {
     // console.log("SimpleTower update");
     this.setArmAngle(this.getArmAngle() + Math.PI / 90);
 
     // Call base method
-    GameObject.prototype.update.call(this);
+    GameObject.prototype.update.call(this, deltaT);
 };

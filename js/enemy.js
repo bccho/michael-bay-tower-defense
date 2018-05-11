@@ -1,4 +1,4 @@
-// Enemy inherits from GameObject
+// Enemy inherits from AnimatedGameObject
 function Enemy(kwargs) {
     kwargs = kwargs || {};
 
@@ -16,18 +16,17 @@ function Enemy(kwargs) {
     }
 
     kwargs = setDefault(kwargs, "heightAboveGround", 0);
-    GameObject.call(this, kwargs);
+    AnimatedGameObject.call(this, kwargs);
 
     return this;
 }
+Enemy.prototype = new AnimatedGameObject();
 
-Enemy.prototype = new GameObject();
-
-Enemy.prototype.update = function(delta_t) {
-    this._position.add(this._velocity.clone().multiplyScalar(delta_t));
+Enemy.prototype.update = function(deltaT) {
+    this._position.add(this._velocity.clone().multiplyScalar(deltaT));
 
     // Call base method
-    GameObject.prototype.update.call(this);
+    AnimatedGameObject.prototype.update.call(this, deltaT);
 };
 
 
@@ -43,5 +42,12 @@ function SimpleEnemy(kwargs) {
 
     return this;
 }
-
 SimpleEnemy.prototype = new Enemy();
+
+
+// Horse animated enemy
+function HorseEnemy(kwargs) {
+    kwargs = setDefault(kwargs, "model_names", ["animated_models/horse.js"]);
+    Enemy.call(this, kwargs);
+}
+HorseEnemy.prototype = new Enemy();
