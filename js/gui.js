@@ -72,7 +72,6 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     // gui controls are added to this object below
     var gc = {};
     gc.stopTime  = gui.add( Gui.values, 'stopTime' ).name( "Pause" );
-    gc.reset     = gui.add( Gui.values, 'reset' ).name("Reset");
     gc.systems   = gui.add( Gui.values, 'systems', Gui.particleSystems ).name("ParticleSystems");
 
     var disp = gui.addFolder( "DISPLAY OPTIONS");
@@ -85,8 +84,7 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     // REGISTER CALLBACKS FOR WHEN GUI CHANGES:
     size.onChange( Renderer.onWindowResize );
 
-    gc.stopTime.onChange( ParticleEngine.pause );
-    gc.reset.onChange( ParticleEngine.restart );
+    gc.stopTime.onChange( GameEngine.pause.bind(GameEngine) );
 
     gc.blends.onChange( function( value ) {
         var emitters = ParticleEngine.getEmitters();

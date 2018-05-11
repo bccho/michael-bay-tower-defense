@@ -9,6 +9,7 @@ var GameEngine = GameEngine || {
     _gameObjects: [],
 };
 
+// Total fresh start
 GameEngine.start = function() {
     this._prev_t = Date.now();
     this._cur_t  = Date.now();
@@ -16,7 +17,13 @@ GameEngine.start = function() {
     this.gameObjects = [];
     this.emitters = [];
 
-    ParticleEngine.start();
+    Scene.removeObjects();
+    ParticleEngine.removeEmitters();
+    ParticleEngine.removeAnimations();
+};
+
+GameEngine.pause = function () {
+    this._isRunning = !this._isRunning;
 };
 
 // creates game object, adds it to the list of in-game instances, adds to scene, and returns reference
@@ -29,30 +36,20 @@ GameEngine.createGameObject = function(gameObject, kwargs) {
 
 GameEngine.createEmitter = function (emitter) {
     ParticleEngine.addEmitter(emitter);
-    for ( i = 0 ; i < ParticleEngine._emitters.length ; ++i ) {
-        if (ParticleEngine._emitters[i].alive === false)
-        {
-            continue;
-        }
+    for (var i = 0; i < ParticleEngine._emitters.length; i++) {
+        if (ParticleEngine._emitters[i].alive === false) { continue; }
         Scene.addObject( ParticleEngine.getDrawableParticles( i ) );
     }
     this.emitters.push(emitter);
 };
 
 GameEngine.removeDeadEmitters = function () {
-    for (var i = 0; i < this.emitters.length; i++)
-    {
+    for (var i = 0; i < this.emitters.length; i++) {
         var currEmitter = this.emitters[i];
-        if (currEmitter.alive)
-        {
-            continue;
-        }
+        if (currEmitter.alive) { continue; }
 
         var index = this.emitters.indexOf(currEmitter);
-        if (index > -1)
-        {
-            this.emitters.splice(index, 1);
-        }
+        if (index > -1) { this.emitters.splice(index, 1); }
     }
 };
 
@@ -70,15 +67,15 @@ GameEngine.mainLoop = function() {
     this._cur_t = Date.now();
     var deltaT = (this._cur_t - this._prev_t) / 1000.0;
     this._prev_t = this._cur_t;
-    if (!this._isRunning) deltaT = 0.0;
+    if (this._isRunning) {
+        ParticleEngine.step(deltaT);
 
-    ParticleEngine.step(deltaT);
+        for (var i = 0; i < this.gameObjects.length; i++) {
+            this.gameObjects[i].update(deltaT);
+        }
 
-    for (var i = 0; i < this.gameObjects.length; i++) {
-        this.gameObjects[i].update(deltaT);
+        Renderer.update();
     }
 
-    Renderer.update();
-
-    requestAnimationFrame( this.mainLoop.bind(this) );
+    requestAnimationFrame(this.mainLoop.bind(this));
 };

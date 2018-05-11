@@ -19,7 +19,6 @@ var ParticleEngine = ParticleEngine || new ( function() {
     _self._emitters   = [];
     _self._meshes     = [];
     _self._animations = [];
-    _self._isRunning  = false;
     _self._emitterCreated = []; // time of creation of emiiter
     _self.alive = true;
 
@@ -53,29 +52,26 @@ var ParticleEngine = ParticleEngine || new ( function() {
         _self._animations = [];
     };
 
-    _self.start = function () {
-        _self._isRunning = true;
-    };
-
     _self.step = function (deltaT) {
         var i;
-        for ( i = 0; i < _self._animations.length ; i++ ) {
+        // Update animations
+        for (i = 0; i < _self._animations.length; i++) {
             _self._animations[i].update( deltaT * 1000.0 );
         }
 
-        for ( i = 0 ; i < _self._emitters.length ; i++ ) {
+        for (i = 0; i < _self._emitters.length; i++) {
+            // Update emitters
             var currEmitter = _self._emitters[i];
-            currEmitter.update( deltaT );
-            if (currEmitter._lifespan !== undefined)
-            {
-                if (Date.now() - _self._emitterCreated[i] > currEmitter._lifespan)
-                {
+            currEmitter.update(deltaT);
+            // Kill emitters past lifespan
+            if (currEmitter._lifespan !== undefined) {
+                // TODO: use GameEngine time so that pausing is universal
+                if (Date.now() - _self._emitterCreated[i] > currEmitter._lifespan) {
                     // remove the current emitter
                     const index = _self._emitters.indexOf(currEmitter);
                     currEmitter.kill();
 
-                    if (index !== -1)
-                    {
+                    if (index !== -1) {
                         _self._emitters.splice(index, 1);
                         _self._emitterCreated.splice(index, 1);
                     }
@@ -84,18 +80,6 @@ var ParticleEngine = ParticleEngine || new ( function() {
 
         }
 
-    };
-
-    _self.stop = function () {
-        _self._isRunning = false;
-    };
-
-    _self.pause = function () {
-        if ( _self._isRunning ) {
-            _self.stop();
-        } else {
-            _self.start();
-        }
     };
 
     _self.restart = function () {

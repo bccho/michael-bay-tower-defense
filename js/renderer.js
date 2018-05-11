@@ -48,7 +48,7 @@ Renderer.create = function( scene, canvas ) {
     // Create camera and setup controls
     Renderer._camera   = new THREE.PerspectiveCamera ( 55, Renderer._aspect, 0.01, 5000 );
     Renderer._controls = new THREE.TrackballControls ( Renderer._camera, Renderer._renderer.domElement );
-    Renderer._camera.position.set( 0, 0, 200 );
+    Renderer._camera.position.set( 200, 200, 200 );
 
 
     // Add rendering stats, so we know the performance
@@ -109,6 +109,6 @@ window.addEventListener( 'keyup', function( event ) {
 window.addEventListener( 'keyup', function( event ) {
     // only respond to 'Spacebar' key
     if ( event.which === 32 ) {
-        ParticleEngine.pause();
+        GameEngine.pause();
     }
 });
