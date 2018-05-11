@@ -67,7 +67,7 @@ GameEngine.findNearestGameObject = function(gameObjectType, position) {
             minIndex = i;
         }
     }
-    return findGameObject(gameObjectType, i);
+    return this.findGameObject(gameObjectType, minIndex);
 };
 
 
