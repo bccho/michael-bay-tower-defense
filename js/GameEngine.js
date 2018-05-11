@@ -15,7 +15,6 @@ GameEngine.start = function() {
     this._cur_t  = Date.now();
     this._isRunning = true;
     this._gameObjects = {};
-    this._emitters = [];
 
     Scene.removeObjects();
 };
@@ -75,33 +74,13 @@ GameEngine.findNearestGameObject = function(gameObjectType, position) {
     return this.findGameObject(gameObjectType, minIndex);
 };
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  EMITTER FUNCTIONS                                                                                 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 GameEngine.getEmitters = function() {
-    return this._emitters;
+    return this._gameObjects["Emitter"];
 };
-
-// creates a particle emitter and places it in the scene
-GameEngine.createEmitter = function(emitter) {
-    if (!emitter.alive) return;
-    this._emitters.push(emitter);
-    Scene.addObject(emitter.getModel());
-};
-
-// removes all inactive emitters
-GameEngine.removeDeadEmitters = function() {
-    for (var i = 0; i < this._emitters.length; i++) {
-        var currEmitter = this._emitters[i];
-        if (currEmitter.alive) continue;
-
-        var index = this._emitters.indexOf(currEmitter);
-        if (index > -1) { this._emitters.splice(index, 1); }
-    }
-};
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  MAIN LOOP                                                                                         //
@@ -118,21 +97,16 @@ GameEngine.mainLoop = function() {
 
     if (this._isRunning) {
         // Update emitters
-        for (i = 0; i < this._emitters.length; i++) {
-            var currEmitter = this._emitters[i];
+        var emitters = this.getEmitters();
+        for (i = 0; i < emitters.length; i++) {
+            var currEmitter = emitters[i];
             currEmitter.update(deltaT);
 
             // Kill emitters past lifespan
             if (currEmitter._lifespan !== undefined) {
                 // TODO: use GameEngine time so that pausing is universal
                 if (Date.now() - currEmitter._created > currEmitter._lifespan) {
-                    // remove the current emitter
-                    const index = this._emitters.indexOf(currEmitter);
-                    currEmitter.kill();
-
-                    if (index !== -1) {
-                        this._emitters.splice(index, 1);
-                    }
+                    destroy(currEmitter);
                 }
             }
         }
@@ -149,5 +123,5 @@ GameEngine.mainLoop = function() {
         Renderer.update();
     }
 
-    requestAnimationFrame( this.mainLoop.bind(this) );
+    requestAnimationFrame(this.mainLoop.bind(this));
 };
