@@ -10,8 +10,9 @@ function Enemy(kwargs) {
         var value = kwargs[option];
         if (option === "velocity") {
             this._velocity = value;
-            delete kwargs.velocity;
-        }
+        } else continue;
+        // Delete option if dealt with here
+        delete kwargs[option];
     }
 
     kwargs = setDefault(kwargs, "heightAboveGround", 0);

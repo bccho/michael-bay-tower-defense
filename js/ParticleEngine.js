@@ -1,5 +1,8 @@
-function Emitter ( opts ) {
-    // initialize some base variables needed by emitter, that we will extract from options
+// Emitter controls one particle system. Inherits from GameObject
+function Emitter(kwargs) {
+    kwargs = kwargs || {};
+
+    // Initialize member variables
     this._maxParticleCount     = undefined;
     this._particlesPerSecond   = undefined;
     this._initializer          = undefined;
@@ -20,9 +23,9 @@ function Emitter ( opts ) {
     this.alive = true;
     this._created = Date.now(); // time of creation of emitter. TODO: use GameEngine time
 
-    // parse options
-    for ( var option in opts ) {
-        var value = opts[option];
+    // Parse options
+    for (var option in kwargs) {
+        var value = kwargs[option];
         if ( option === "material" ) {
             this._material = value;
         } else if ( option === "maxParticles" ) {
@@ -43,12 +46,13 @@ function Emitter ( opts ) {
             this._height = value;
         } else if ( option === "lifespan") {
             this._lifespan = value;
-        } else {
-            console.log( "Unknown option " + option + "! Make sure to register it!" )
-        }
+        } else continue;
+        // Delete option if dealt with here
+        delete kwargs[option];
     }
+    GameObject.call(this, kwargs);
 
-    if ( this._cloth === true ) {
+    if (this._cloth === true) {
         this._maxParticleCount = this._width * this._height;
         this._particlesPerSecond = 1e8 * this._maxParticleCount;
     }
@@ -121,30 +125,9 @@ function Emitter ( opts ) {
 
     return this;
 }
+Emitter.prototype = new GameObject();
 
-Emitter.prototype.restart = function() {
-    var i, j;
-
-    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
-        this._initialized[i] = 0;
-    }
-
-    for ( var attributeKey in this._particleAttributes ) {
-        var attribute       = this._particleAttributes[attributeKey];
-        var attributeArray  = attribute.array;
-        var attributeLength = attribute.itemSize;
-
-        for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
-            for ( j = 0 ; j < attributeLength ; ++j ) {
-                attributeArray[ attributeLength * i + j ] = 1e-9;
-            }
-        }
-
-        attribute.needsUpdate = true;
-    }
-};
-
-Emitter.prototype.update = function( delta_t ) {
+Emitter.prototype.update = function(delta_t) {
     // how many particles should we add?
     var toAdd = Math.floor( delta_t * this._particlesPerSecond );
 
@@ -169,13 +152,36 @@ Emitter.prototype.update = function( delta_t ) {
     }
 };
 
+Emitter.prototype.getModel = function () {
+    return this._drawableParticles;
+};
+
+
+
+Emitter.prototype.restart = function() {
+    var i, j;
+
+    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
+        this._initialized[i] = 0;
+    }
+
+    for ( var attributeKey in this._particleAttributes ) {
+        var attribute       = this._particleAttributes[attributeKey];
+        var attributeArray  = attribute.array;
+        var attributeLength = attribute.itemSize;
+
+        for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
+            for ( j = 0 ; j < attributeLength ; ++j ) {
+                attributeArray[ attributeLength * i + j ] = 1e-9;
+            }
+        }
+
+        attribute.needsUpdate = true;
+    }
+};
 
 Emitter.prototype.enableSorting = function( val ) {
     this._sorting = val;
-};
-
-Emitter.prototype.getDrawableParticles = function () {
-    return this._drawableParticles;
 };
 
 Emitter.prototype.sortParticles = function () {
@@ -233,11 +239,10 @@ Emitter.prototype.getSpawnable = function ( toAdd ) {
     return toSpawn;
 };
 
-Emitter.prototype.kill = function ()
-{
+// TODO: let destroy() take care of removing object from scene
+Emitter.prototype.kill = function () {
     this.alive = false;
     Scene.removeObject( this.getDrawableParticles() );
     this._drawableParticles = [];
-
-}
+};
 

@@ -88,7 +88,7 @@ GameEngine.getEmitters = function() {
 GameEngine.createEmitter = function(emitter) {
     if (!emitter.alive) return;
     this._emitters.push(emitter);
-    Scene.addObject(emitter.getDrawableParticles());
+    Scene.addObject(emitter.getModel());
 };
 
 // removes all inactive emitters
