@@ -1,9 +1,12 @@
-var Main = Main || { };
+var Main = Main || {};
 
 // called when the gui params change and we need to update mesh
 Main.systemChangeCallback = function(InputSettings) {
     // Start game engine from scratch
     GameEngine.start();
+
+    // Initialize level manager
+    // TODO: Kraig, instantiate your level manager here using InputSettings.gameSettings
 
     // Create the scene
     InputSettings.initialize();

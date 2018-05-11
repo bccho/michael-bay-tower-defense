@@ -31,8 +31,14 @@ SystemSettings.levels.level1 = {
     // Particle Material
     particleMaterial: SystemSettings.standardMaterial,
 
+    // Game settings
+    gameSettings: {
+        initialHealth: 100,
+        initialMoney: 1000
+    },
+
     // Scene
-    initialize : function () {
+    initialize: function() {
         var elevationFunction = function(i, j) {
             return Math.random() * 15.0;
         };
