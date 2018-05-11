@@ -354,26 +354,11 @@ SystemSettings.mySystem = {
 
     // Initializer
     initializerFunction: VoidInitializer,
-    initializerSettings: {
-        sphere: new THREE.Vector4(0.0, 0.0, 0.0, 1.0),
-        baseColor: new THREE.Vector4(0.9, 0.5, 0.0, 1.0),
-        magColor: new THREE.Vector3(1.0, 1.0, 0.0),
-        velocity: new THREE.Vector3(0.0, 0.0, 0.0),
-        explosionSpeed: 200,
-        damping: new THREE.Vector3(0.0, 0, 0), // (linear coeff, quadratic coeff, not in use )
-        lifetime: 1,
-        size: 6.0,
-    },
+    initializerSettings: {},
 
     // Updater
     updaterFunction: VoidUpdater,
-    updaterSettings: {
-        externalForces: {
-            gravity: new THREE.Vector3(0, 0, 0),
-            attractors: [],
-        },
-        collidables: {},
-    },
+    updaterSettings: {},
 
     // Scene
     maxParticles: 1,
