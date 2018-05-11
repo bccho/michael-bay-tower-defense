@@ -32,6 +32,7 @@ Enemy.prototype.update = function(deltaT) {
 
 // Simple enemy for quick and dirty testing. Inherits from Enemy
 function SimpleEnemy(kwargs) {
+    kwargs = kwargs || {};
     var radius = 10.0;
     var phong = new THREE.MeshPhongMaterial( {color: 0xFF0000} );
     var body = new THREE.Mesh(new THREE.SphereGeometry(radius, 32, 32), phong);
@@ -47,6 +48,7 @@ SimpleEnemy.prototype = new Enemy();
 
 // Horse animated enemy
 function HorseEnemy(kwargs) {
+    kwargs = kwargs || {};
     kwargs = setDefault(kwargs, "model_names", ["animated_models/horse.js"]);
     Enemy.call(this, kwargs);
 }
