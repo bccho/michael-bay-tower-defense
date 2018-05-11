@@ -53,3 +53,80 @@ GameObject.prototype.update = function() {
 GameObject.prototype.getModel = function() {
     return this._model;
 };
+
+
+
+// GameObject with animated mesh. Inherits from GameObject
+function AnimatedGameObject(kwargs) {
+    kwargs = kwargs || {};
+
+    // Initialize member variables
+    this._animations = [];
+    this._meshes = [];
+    this._model_names = undefined;
+    this._material = new THREE.MeshLambertMaterial({color: 0x606060, morphTargets: true, transparent:true, opacity:0.5});
+    this._scale = new THREE.Vector3(1, 1, 1);
+
+    // Parse options
+    for (var option in kwargs) {
+        var value = kwargs[option];
+        if (option === "model_names") {
+            this._model_names = value;
+            delete kwargs.model_names;
+        } else if (option === "material") {
+            this._material = value;
+            delete kwargs.material;
+        } else if (option === "scale") {
+            this._scale = value;
+            delete kwargs.scale;
+        }
+    }
+
+    // Need to call parent constructor first before adding animations
+    GameObject.call(this, kwargs);
+
+    // Load animations
+    var material = this._material;
+
+    if (this._model_names !== undefined) {
+        // Manually create model
+        this._model = new THREE.Group();
+        for (var i = 0; i < this._model_names.length; i++) {
+            // Load mesh from file
+            var loadFunction = function(geometry) {
+                var mesh = new THREE.Mesh(geometry, material);
+                if (mesh !== undefined) {
+                    // Make animation from mesh
+                    mesh.scale.copy(this._scale);
+                    var animation = new THREE.MorphAnimation(mesh);
+                    // Add to lists of meshes and animations
+                    this._meshes.push(mesh);
+                    this._animations.push(animation);
+                    this._model.add(mesh);
+                    animation.play();
+                }
+            };
+            var loader = new THREE.JSONLoader(true);
+            loader.load(this._model_names[i], loadFunction.bind(this));
+        }
+    }
+
+    return this;
+}
+
+AnimatedGameObject.prototype = new GameObject();
+
+AnimatedGameObject.prototype.stop = function() {
+    for (var i = 0; i < this._animations.length; i++) {
+        this._animations[i].isPlaying = false;
+    }
+};
+
+AnimatedGameObject.prototype.update = function(deltaT) {
+    for (var i = 0; i < this._animations.length; i++) {
+        this._animations[i].update(deltaT * 1000.0);
+    }
+
+    // Call base method
+    GameObject.prototype.update.call(this);
+};

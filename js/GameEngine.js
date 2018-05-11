@@ -19,7 +19,6 @@ GameEngine.start = function() {
 
     Scene.removeObjects();
     ParticleEngine.removeEmitters();
-    ParticleEngine.removeAnimations();
 };
 
 GameEngine.pause = function () {

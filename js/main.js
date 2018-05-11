@@ -5,12 +5,6 @@ Main.particleSystemChangeCallback = function ( InputSettings ) {
     // Start game engine
     GameEngine.start();
 
-    // If we specified animated model, then lets load it first
-    if ( InputSettings.animatedModelName ) {
-        var loader = new THREE.JSONLoader( true );
-        loader.load( InputSettings.animatedModelName, InputSettings.animationLoadFunction );
-    }
-
     // Create new system
     var initializer = new InputSettings.initializerFunction ( InputSettings.initializerSettings );
     var updater     = new InputSettings.updaterFunction ( InputSettings.updaterSettings );

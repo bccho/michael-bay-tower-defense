@@ -1,17 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// COS 426 Assignement 4 stub                                                 //
-// Particle Systems                                                           //
-// Many ideas here are taken from SPARKS.js                                   //
-////////////////////////////////////////////////////////////////////////////////
-
-// TODO :
-// - shader requires more exploration / better interface
-// - change moving particle to setting it invisible in shader
-// - initializers and particle engine must work with all the sahder supported attributes
-// - incorporate gui controls
-
-// Singleton Engine - we will have one particle engine per application,
-// driving the entire application.
 var ParticleEngine = ParticleEngine || new ( function() {
     var _self      = this;
 
@@ -32,34 +18,8 @@ var ParticleEngine = ParticleEngine || new ( function() {
         _self._emitterCreated = [];
     };
 
-    _self.addMesh = function ( mesh ) {
-        _self._meshes.push( mesh );
-    };
-
-    _self.removeMeshes = function() {
-        _self._meshes = [];
-    };
-
-    _self.addAnimation = function ( animation ) {
-        _self._animations.push( animation );
-        animation.play()
-    };
-
-    _self.removeAnimations = function () {
-        for ( var i = 0 ; i < _self._animations.length; ++i ) {
-            _self._animations[i].isPlaying = false;
-        }
-        _self._animations = [];
-    };
-
     _self.step = function (deltaT) {
-        var i;
-        // Update animations
-        for (i = 0; i < _self._animations.length; i++) {
-            _self._animations[i].update( deltaT * 1000.0 );
-        }
-
-        for (i = 0; i < _self._emitters.length; i++) {
+        for (var i = 0; i < _self._emitters.length; i++) {
             // Update emitters
             var currEmitter = _self._emitters[i];
             currEmitter.update(deltaT);

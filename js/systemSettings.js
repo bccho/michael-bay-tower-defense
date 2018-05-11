@@ -293,20 +293,9 @@ SystemSettings.animated = {
         plane.position.y = 0;
 
         Scene.addObject( plane );
+
+        create(AnimatedGameObject, {"model_names": ["animated_models/horse.js"]});
     },
-
-    // Animation
-    animatedModelName: "animated_models/horse.js",
-    animationLoadFunction : function( geometry ) {
-        mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0x606060, morphTargets: true, transparent:true, opacity:0.5 } ) );
-        mesh.scale.set( 0.25, 0.25, 0.25 );
-        // mesh.position.set( 0.0, 30.0, 0.0 );
-        Scene.addObject( mesh );
-        ParticleEngine.addMesh( mesh );
-
-        ParticleEngine.addAnimation( new THREE.MorphAnimation( mesh ) );
-    },
-
 };
 
 

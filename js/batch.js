@@ -2,16 +2,8 @@ var Batch = Batch || { };
 
 // called when the gui params change and we need to update mesh
 Batch.particleSystemChangeCallback = function ( InputSettings ) {
-    var i;
-
     // Start game engine
     GameEngine.start();
-
-    // If we specified animated model, then lets load it first
-    if ( InputSettings.animatedModelName ) {
-        var loader = new THREE.JSONLoader( true );
-        loader.load( InputSettings.animatedModelName, InputSettings.animationLoadFunction );
-    }
 
     // Create new system
     var initializer = new InputSettings.initializerFunction ( InputSettings.initializerSettings );
