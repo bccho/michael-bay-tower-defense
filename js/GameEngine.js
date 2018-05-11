@@ -86,7 +86,7 @@ GameEngine.now = function() {
 };
 
 GameEngine.getEmitters = function() {
-    return this._gameObjects["Emitter"];
+    return this._gameObjects["Emitter"] || [];
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

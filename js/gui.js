@@ -9,7 +9,7 @@ Gui.windowSizes = [ "full","400x400","600x400","600x600","800x600","800x800" ];
 
 Gui.blendTypes = [ "Normal", "Additive" ];
 
-Gui.particleSystems = [ "basic", "oscilator", "fountainBounce", "fountainSink", "attractor", "animated", "cloth", "mySystem" ];
+Gui.levels = [];
 
 Gui.textures = [ "blank", "base", "fire", "smoke", "spark", "sphere", "smoke" ];
 
@@ -23,7 +23,7 @@ Gui.values = {
     guiToBatch : function() {},
     blendTypes:  Gui.blendTypes[0],
     textures:    Gui.textures[0],
-    systems:     Gui.particleSystems[0],
+    systems:     "",
     depthTest:   true,
     transparent: true,
     sorting:     true,
@@ -64,6 +64,13 @@ Gui.toCommandString = function () {
 };
 
 Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeCallback ) {
+    // Populate systems. TODO: cross our fingers and hope that it's in order of definition
+    Gui.levels = [];
+    for (var lvl in SystemSettings.levels) {
+        Gui.levels.push(lvl);
+    }
+    Gui.values.systems = Gui.levels[0];
+
     // create top level controls
     var gui     = new dat.GUI( { width: 300 } );
     var size    = gui.add( Gui.values, 'windowSize', Gui.windowSizes ).name("Window Size");
@@ -72,7 +79,7 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     // gui controls are added to this object below
     var gc = {};
     gc.stopTime  = gui.add( Gui.values, 'stopTime' ).name( "Pause" );
-    gc.systems   = gui.add( Gui.values, 'systems', Gui.particleSystems ).name("ParticleSystems");
+    gc.systems   = gui.add( Gui.values, 'systems', Gui.levels ).name("Scenes");
 
     var disp = gui.addFolder( "DISPLAY OPTIONS");
     gc.blends    = disp.add( Gui.values, 'blendTypes', Gui.blendTypes ).name("Blending Types");
@@ -111,8 +118,8 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     } );
 
     gc.systems.onChange( function(value) {
-        var settings = SystemSettings[value];
-        Main.particleSystemChangeCallback ( settings );
+        var settings = SystemSettings.levels[value];
+        Main.systemChangeCallback(settings);
     } );
 
     gc.depthTest.onChange( function( value ) {
