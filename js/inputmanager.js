@@ -55,6 +55,8 @@ InputManager.removeListeners = function(element, type) {
 
 /* Interface for clicking objects */
 
+// FIXME: drag where you bring the mouse close to where you started not detected as a drag
+// TODO: have a "dragging" flag set to true on mouse move if moved more than threshold since mouse down
 InputManager.addMouseClickEvent = function(callback, kwargs) {
     var listener = function(event) {
         // If previous mouse down recorded, put a threshold on mouse position change between mouse down and up
