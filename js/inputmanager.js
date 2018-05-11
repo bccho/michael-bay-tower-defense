@@ -1,6 +1,15 @@
 // InputManager is a singleton class that manages game-related keyboard and mouse events
 var InputManager = InputManager || {
-    _listeners: {}
+    _listeners: {},
+    _lastMouseDown: {},
+    _clickMouseDeltaThreshold: 10
+};
+
+InputManager.initialize = function() {
+    // Listener to keep track of mouse (x, y) at last mouse down
+    InputManager.addListener(Renderer._canvas, "mousedown", function(event) {
+        InputManager._lastMouseDown[event.button] = [event.clientX, event.clientY]
+    });
 };
 
 /* Interface for general events */
@@ -9,45 +18,55 @@ var InputManager = InputManager || {
 InputManager.addListener = function(element, type, listener, kwargs) {
     element = element || window;
     // Add to internal collection of listeners
-    setDefault(this._listeners, element, {});
-    setDefault(this._listeners[element], type, []);
-    this._listeners[element][type].push(listener);
+    setDefault(InputManager._listeners, element, {});
+    setDefault(InputManager._listeners[element], type, []);
+    InputManager._listeners[element][type].push(listener);
     // Register listener with element, default window
     element.addEventListener(type, listener, kwargs);
 };
 
 InputManager.getListeners = function(type) {
-    return this._listeners[type];
+    return InputManager._listeners[type];
 };
 
 InputManager.removeListeners = function(element, type) {
     element = element || window;
-    if (!this._listeners.hasOwnProperty(element)) return;
+    if (!InputManager._listeners.hasOwnProperty(element)) return;
 
     var i;
     // If type is specified, remove listeners only of that type
     if (type !== undefined) {
-        if (!this._listeners[element].hasOwnProperty(type)) return;
-        for (i = 0; i < this._listeners[element][type].length; i++) {
-            window.removeEventListener(type, this._listeners[element][type][i]);
+        if (!InputManager._listeners[element].hasOwnProperty(type)) return;
+        for (i = 0; i < InputManager._listeners[element][type].length; i++) {
+            window.removeEventListener(type, InputManager._listeners[element][type][i]);
         }
-        delete this._listeners[type];
+        delete InputManager._listeners[type];
     }
     // Otherwise, remove all listeners
     else {
-        for (type in this._listeners[element]) {
-            for (i = 0; i < this._listeners[element][type].length; i++) {
-                window.removeEventListener(type, this._listeners[element][type][i]);
+        for (type in InputManager._listeners[element]) {
+            for (i = 0; i < InputManager._listeners[element][type].length; i++) {
+                window.removeEventListener(type, InputManager._listeners[element][type][i]);
             }
         }
-        this._listeners = {};
+        InputManager._listeners = {};
     }
 };
 
-
 /* Interface for clicking objects */
+
 InputManager.addMouseClickEvent = function(callback, kwargs) {
-    this.addListener(Renderer._canvas, "click", callback, kwargs);
+    var listener = function(event) {
+        // If previous mouse down recorded, put a threshold on mouse position change between mouse down and up
+        var lastMouseDown = InputManager._lastMouseDown[event.button];
+        if (lastMouseDown !== undefined) {
+            var deltaX = event.clientX - lastMouseDown[0];
+            var deltaY = event.clientY - lastMouseDown[1];
+            if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) > InputManager._clickMouseDeltaThreshold) return;
+        }
+        callback(event);
+    };
+    InputManager.addListener(Renderer._canvas, "mouseup", listener, kwargs);
 };
 
 InputManager.getRaycaster = function(event) {
@@ -71,7 +90,7 @@ InputManager.addClickTerrainEvent = function(callback, kwargs) {
         callback(event, intersects);
     };
 
-    this.addMouseClickEvent(listener, kwargs);
+    InputManager.addMouseClickEvent(listener, kwargs);
 };
 
 InputManager.addClickGameObjectEvent = function(gameobject, callback, kwargs) {
@@ -85,5 +104,5 @@ InputManager.addClickGameObjectEvent = function(gameobject, callback, kwargs) {
         callback(event, intersects);
     };
 
-    this.addMouseClickEvent(listener, kwargs);
+    InputManager.addMouseClickEvent(listener, kwargs);
 };
