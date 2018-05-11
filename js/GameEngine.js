@@ -6,7 +6,7 @@ var GameEngine = GameEngine || {
     _prev_t: undefined,
     _cur_t: undefined,
     _isRunning: false,
-    _gameObjects: [],
+    _gameObjects: undefined
 };
 
 // Total fresh start
@@ -21,6 +21,8 @@ GameEngine.start = function() {
 
 GameEngine.pause = function () {
     this._isRunning = !this._isRunning;
+    this._prev_t = Date.now();
+    this._cur_t  = Date.now();
 };
 
 
@@ -78,6 +80,11 @@ GameEngine.findNearestGameObject = function(gameObjectType, position) {
 //  EMITTER FUNCTIONS                                                                                 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Global time ignoring pauses
+GameEngine.now = function() {
+    return this._cur_t;
+};
+
 GameEngine.getEmitters = function() {
     return this._gameObjects["Emitter"];
 };
@@ -104,8 +111,7 @@ GameEngine.mainLoop = function() {
 
             // Kill emitters past lifespan
             if (currEmitter._lifespan !== undefined) {
-                // TODO: use GameEngine time so that pausing is universal
-                if (Date.now() - currEmitter._created > currEmitter._lifespan) {
+                if (this.now() - currEmitter._created > currEmitter._lifespan) {
                     destroy(currEmitter);
                 }
             }

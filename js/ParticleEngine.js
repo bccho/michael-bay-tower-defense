@@ -20,8 +20,7 @@ function Emitter(kwargs) {
         dampening:     3
     };
 
-    this.alive = true;
-    this._created = Date.now(); // time of creation of emitter. TODO: use GameEngine time
+    this._created = GameEngine.now(); // time of creation of emitter
 
     // Parse options
     for (var option in kwargs) {
@@ -238,11 +237,3 @@ Emitter.prototype.getSpawnable = function ( toAdd ) {
 
     return toSpawn;
 };
-
-// TODO: let destroy() take care of removing object from scene
-Emitter.prototype.kill = function () {
-    this.alive = false;
-    Scene.removeObject( this.getDrawableParticles() );
-    this._drawableParticles = [];
-};
-
