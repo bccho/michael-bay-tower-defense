@@ -53,7 +53,7 @@ window.onload = function() {
     Batch.particleSystemChangeCallback( SystemSettings[Batch.selectedSystem] );
 
     if (Batch.selectedSystem !== 'cloth') {
-        var emitters = ParticleEngine.getEmitters();
+        var emitters = GameEngine.getEmitters();
         for ( var i = 0 ; i < emitters.length ; i++ ) {
             emitters[i]._material.uniforms.texture.value = new THREE.ImageUtils.loadTexture( 'images/' + Batch.cmds.texture + '.png' );
             emitters[i]._material.depthTest = (Batch.cmds.depthTest === 'true');

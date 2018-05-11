@@ -18,7 +18,6 @@ GameEngine.start = function() {
     this._emitters = [];
 
     Scene.removeObjects();
-    ParticleEngine.removeEmitters();
 };
 
 GameEngine.pause = function () {
@@ -81,24 +80,25 @@ GameEngine.findNearestGameObject = function(gameObjectType, position) {
 //  EMITTER FUNCTIONS                                                                                 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+GameEngine.getEmitters = function() {
+    return this._emitters;
+};
+
 // creates a particle emitter and places it in the scene
-GameEngine.createEmitter = function (emitter) {
-    ParticleEngine.addEmitter(emitter);
-    for (var i = 0; i < ParticleEngine._emitters.length; i++) {
-        if (ParticleEngine._emitters[i].alive === false) { continue; }
-        Scene.addObject( ParticleEngine.getDrawableParticles( i ) );
-    }
+GameEngine.createEmitter = function(emitter) {
+    if (!emitter.alive) return;
     this._emitters.push(emitter);
+    Scene.addObject(emitter.getDrawableParticles());
 };
 
 // removes all inactive emitters
-GameEngine.removeDeadEmitters = function () {
-    for (var i = 0; i < this.emitters.length; i++) {
-        var currEmitter = this.emitters[i];
-        if (currEmitter.alive) { continue; }
+GameEngine.removeDeadEmitters = function() {
+    for (var i = 0; i < this._emitters.length; i++) {
+        var currEmitter = this._emitters[i];
+        if (currEmitter.alive) continue;
 
-        var index = this.emitters.indexOf(currEmitter);
-        if (index > -1) { this.emitters.splice(index, 1); }
+        var index = this._emitters.indexOf(currEmitter);
+        if (index > -1) { this._emitters.splice(index, 1); }
     }
 };
 
@@ -109,19 +109,38 @@ GameEngine.removeDeadEmitters = function () {
 
 // main processing loop for the entire game - updates and renders
 GameEngine.mainLoop = function() {
+    var i;
 
     // determine deltaT
     this._cur_t = Date.now();
     var deltaT = (this._cur_t - this._prev_t) / 1000.0;
     this._prev_t = this._cur_t;
+
     if (this._isRunning) {
-        // Update all particles
-        ParticleEngine.step(deltaT);
+        // Update emitters
+        for (i = 0; i < this._emitters.length; i++) {
+            var currEmitter = this._emitters[i];
+            currEmitter.update(deltaT);
+
+            // Kill emitters past lifespan
+            if (currEmitter._lifespan !== undefined) {
+                // TODO: use GameEngine time so that pausing is universal
+                if (Date.now() - currEmitter._created > currEmitter._lifespan) {
+                    // remove the current emitter
+                    const index = this._emitters.indexOf(currEmitter);
+                    currEmitter.kill();
+
+                    if (index !== -1) {
+                        this._emitters.splice(index, 1);
+                    }
+                }
+            }
+        }
 
         // Update all game objects
         for (var key in this._gameObjects) {
             var list = this._gameObjects[key];
-            for (var i = 0; i < list.length; i++) {
+            for (i = 0; i < list.length; i++) {
                 list[i].update(deltaT);
             }
         }

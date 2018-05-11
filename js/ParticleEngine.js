@@ -2,61 +2,7 @@ var ParticleEngine = ParticleEngine || new ( function() {
     var _self      = this;
 
     // Instance variables - list of emitters, and global delta time
-    _self._emitters   = [];
-    _self._meshes     = [];
     _self._animations = [];
-    _self._emitterCreated = []; // time of creation of emiiter
-    _self.alive = true;
-
-    _self.addEmitter = function ( emitter ) {
-        _self._emitters.push( emitter );
-        _self._emitterCreated.push(Date.now());
-    };
-
-    _self.removeEmitters = function() {
-        _self._emitters = [];
-        _self._emitterCreated = [];
-    };
-
-    _self.step = function (deltaT) {
-        for (var i = 0; i < _self._emitters.length; i++) {
-            // Update emitters
-            var currEmitter = _self._emitters[i];
-            currEmitter.update(deltaT);
-            // Kill emitters past lifespan
-            if (currEmitter._lifespan !== undefined) {
-                // TODO: use GameEngine time so that pausing is universal
-                if (Date.now() - _self._emitterCreated[i] > currEmitter._lifespan) {
-                    // remove the current emitter
-                    const index = _self._emitters.indexOf(currEmitter);
-                    currEmitter.kill();
-
-                    if (index !== -1) {
-                        _self._emitters.splice(index, 1);
-                        _self._emitterCreated.splice(index, 1);
-                    }
-                }
-            }
-
-        }
-
-    };
-
-    _self.restart = function () {
-        _self.stop();
-        for ( var i = 0 ; i < _self._emitters.length ; ++i ) {
-            _self._emitters[i].restart();
-        }
-        _self.start();
-    };
-
-    _self.getDrawableParticles = function ( emitter_idx ) {
-        return _self._emitters[emitter_idx].getDrawableParticles();
-    };
-
-    _self.getEmitters = function( ) {
-        return _self._emitters;
-    };
 
     return _self;
 })();
@@ -80,6 +26,9 @@ function Emitter ( opts ) {
         lifetime:      1,
         dampening:     3
     };
+
+    this.alive = true;
+    this._created = Date.now(); // time of creation of emitter. TODO: use GameEngine time
 
     // parse options
     for ( var option in opts ) {

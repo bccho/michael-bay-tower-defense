@@ -87,7 +87,7 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     gc.stopTime.onChange( GameEngine.pause.bind(GameEngine) );
 
     gc.blends.onChange( function( value ) {
-        var emitters = ParticleEngine.getEmitters();
+        var emitters = GameEngine.getEmitters();
         var blendType;
         if ( value === "Normal" ) {
             blendType = THREE.NormalBlending;
@@ -103,7 +103,7 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     } );
 
     gc.textures.onChange( function( value ) {
-        var emitters = ParticleEngine.getEmitters();
+        var emitters = GameEngine.getEmitters();
         for ( var i = 0 ; i < emitters.length ; i++ ) {
             emitters[i]._material.uniforms.texture.value = new THREE.ImageUtils.loadTexture( 'images/' + value + '.png' );
             emitters[i]._material.needsUpdate  = true;
@@ -116,14 +116,14 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     } );
 
     gc.depthTest.onChange( function( value ) {
-        var emitters = ParticleEngine.getEmitters();
+        var emitters = GameEngine.getEmitters();
         for ( var i = 0 ; i < emitters.length ; i++ ) {
             emitters[i]._material.depthTest = value;
         }
     });
 
     gc.transp.onChange( function( value ) {
-        var emitters = ParticleEngine.getEmitters();
+        var emitters = GameEngine.getEmitters();
         for ( var i = 0 ; i < emitters.length ; i++ ) {
             emitters[i]._material.transparent = value;
             emitters[i]._material.needsUpdate  = true ;
@@ -131,7 +131,7 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     });
 
     gc.sort.onChange( function( value ) {
-        var emitters = ParticleEngine.getEmitters();
+        var emitters = GameEngine.getEmitters();
         for ( var i = 0 ; i < emitters.length ; i++ ) {
             emitters[i]._sorting = value;
         }
