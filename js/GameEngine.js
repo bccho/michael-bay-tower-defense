@@ -6,7 +6,7 @@ var GameEngine = GameEngine || {
     _prev_t: undefined,
     _cur_t: undefined,
     _isRunning: false,
-    _gameObjects: undefined
+    _gameObjects: []
 };
 
 // Total fresh start
@@ -14,7 +14,6 @@ GameEngine.start = function() {
     this._prev_t = Date.now();
     this._cur_t  = Date.now();
     this._isRunning = true;
-    this._gameObjects = {};
 
     Scene.removeObjects();
 };
@@ -30,50 +29,47 @@ GameEngine.pause = function () {
 //  GAME OBJECT FUNCTIONS                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// creates game object, adds it to the list of in-game instances, adds to scene, and returns reference
+// creates a game object, adds to the list of in-game instances, adds to scene, and returns reference
 GameEngine.createGameObject = function(gameObjectType, kwargs) {
     var obj = new gameObjectType(kwargs);
-
-    if (!(gameObjectType.name in this._gameObjects))   // add list of instances of type
-        this._gameObjects[gameObjectType.name] = [];
-    this._gameObjects[gameObjectType.name].push(obj);  // add instance to correct list
-
+    this._gameObjects.push(obj);  // add instance to list
     Scene.addObject(obj.getModel());
     return obj;
 };
 
 // removes game object from list of in-game instances, removes from scene, and does not return reference
 GameEngine.destroyGameObject = function(gameObjectRef) {
-    if (!(gameObjectRef.constructor.name in this._gameObjects)) return;
-
-    var index = this._gameObjects[gameObjectRef.constructor.name].indexOf(gameObjectRef);
+    var index = this._gameObjects.indexOf(gameObjectRef);
     if (index > -1) {
-        this._gameObjects[gameObjectRef.constructor.name].splice(index, 1);
+        this._gameObjects.splice(index, 1);
     }
     Scene.removeObject(gameObjectRef.getModel());
 };
 
 // returns number of game objects of a given type currently in game
 GameEngine.numGameObject = function(gameObjectType) {
-    if (!(gameObjectType.name in this._gameObjects)) return 0;
-    return this._gameObjects[gameObjectType.name].length;
+    var count = 0;
+    for (var obj in this._gameObjects) {
+        if (obj instanceof gameObjectType)
+            count++;
+    }
+    return count;
 };
 
 // locates the ith instance of a particular type of GameObject - returns undefined if no such instance
 GameEngine.findGameObject = function(gameObjectType, i) {
-    if (!(gameObjectType.name in this._gameObjects)) return undefined;
-    if (i < 0 || i >= this._gameObjects[gameObjectType.name].length) return undefined;
-    return this._gameObjects[gameObjectType.name][i];
+    if (i < 0 || i >= this._gameObjects.length) return undefined;
+    return this._gameObjects[i];
 };
 
 // determines the index in the game object list of the instance nearest some position
 GameEngine.findNearestGameObject = function(gameObjectType, position) {
-    if (!(gameObjectType.name in this._gameObjects)) return undefined;
     var minDist = Number.POSITIVE_INFINITY;
-    var minIndex = 0;
-    var list = this._gameObjects[gameObjectType.name];
-    for (var i = 0; i < list.length; i++) {
-        var dist = list[i]._position.distanceToSquared(position);
+    var minIndex = 0;;
+    for (var i = 0; i < this._gameObjects.length; i++) {
+        if (! (this._gameObjects[i] instanceof gameObjectType)) continue;
+
+        var dist = this._gameObjects[i]._position.distanceToSquared(position);
         if (dist < minDist) {
             minDist = dist;
             minIndex = i;
@@ -126,11 +122,8 @@ GameEngine.mainLoop = function() {
         }
 
         // Update all game objects
-        for (var key in this._gameObjects) {
-            var list = this._gameObjects[key];
-            for (i = 0; i < list.length; i++) {
-                list[i].update(deltaT);
-            }
+        for (var i = 0; i < this._gameObjects.length; i++) {
+            this._gameObjects[i].update(deltaT);
         }
         LevelManager.update(deltaT);
 
