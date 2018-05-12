@@ -25,6 +25,13 @@ Enemy.prototype = new AnimatedGameObject();
 Enemy.prototype.update = function(deltaT) {
     this._position.add(this._velocity.clone().multiplyScalar(deltaT));
 
+    // Do damage if reached other side of map
+    if (this._position.z > Terrain._max.z) {
+        // TODO: set damage to parameter
+        LevelManager.takeDamage(1);
+        destroy(this);
+    }
+
     // Call base method
     AnimatedGameObject.prototype.update.call(this, deltaT);
 };

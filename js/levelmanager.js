@@ -87,7 +87,11 @@ LevelManager.update = function(deltaT) {
 };
 
 LevelManager.takeDamage = function(amount) {
-    // TODO: take damage
+    LevelManager._health = Math.max(0, LevelManager._health - amount);
+    // TODO: lose game
+    // if (LevelManager._health === 0) {
+    //     alert("You died!")
+    // }
 };
 
 
