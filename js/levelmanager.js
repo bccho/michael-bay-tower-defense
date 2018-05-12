@@ -70,10 +70,10 @@ LevelManager.update = function(deltaT) {
     LevelManager._currentCooldown += deltaT;
     if (LevelManager._currentCooldown >= LevelManager._settings.cooldown) {
         if (GameEngine.numGameObject(HorseEnemy) < LevelManager._settings.maxEnemies) {
-            var halfWidth = ((Terrain._width - 1) * Terrain._unitSize / 2);
-            var x = (Math.random() * 2 - 1) * halfWidth;
+            var z = Terrain._min.z;
+            var x = Math.random() * (Terrain._max.x - Terrain._min.x) + Terrain._min.x;
             create(HorseEnemy, {
-                position: new THREE.Vector3(x, 0, -halfWidth), // place randomly on left of terrain
+                position: new THREE.Vector3(x, 0, z), // place randomly on left of terrain
                 velocity: new THREE.Vector3(0, 0, 20),
                 scale:    new THREE.Vector3(0.05, 0.05, 0.05)
             });

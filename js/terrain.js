@@ -22,6 +22,8 @@ Terrain.initialize = function(kwargs) {
     this._elevationInitializer = kwargs["elevationInitializer"];
 
     this._offset = new THREE.Vector3(-(this._unitSize * (this._width - 1)) / 2, 0, -(this._unitSize * (this._height - 1)) / 2);
+    this._min = {x: this._offset.x, z: this._offset.z};
+    this._max = {x: -this._offset.x, z: -this._offset.z};
 
     // Initialize elevation map
     this._elevationMap = [];
