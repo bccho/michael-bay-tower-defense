@@ -95,6 +95,20 @@ InputManager.addClickTerrainEvent = function(callback, kwargs) {
     InputManager.addMouseClickEvent(listener, kwargs);
 };
 
+InputManager.addMouseMoveTerrainevent = function(callback, kwargs) {
+    var listener = function(event) {
+        // Check Terrain model exists
+        if (Terrain.getModel() === undefined) return;
+        // Set up raycaster for intersections
+        var raycaster = InputManager.getRaycaster(event);
+        // Find intersections with terrain mesh
+        var intersects = raycaster.intersectObject(Terrain.getModel(), true);
+        callback(event, intersects);
+    };
+
+    InputManager.addListener(Renderer._canvas, "mousemove", listener, kwargs);
+};
+
 InputManager.addClickGameObjectEvent = function(gameobject, callback, kwargs) {
     var listener = function(event) {
         // Check model exists
