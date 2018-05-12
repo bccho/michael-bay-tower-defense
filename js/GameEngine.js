@@ -53,6 +53,7 @@ GameEngine.destroyGameObject = function(gameObjectRef) {
     Scene.removeObject(gameObjectRef.getModel());
 };
 
+// returns number of game objects of a given type currently in game
 GameEngine.numGameObject = function(gameObjectType) {
     if (!(gameObjectType.name in this._gameObjects)) return 0;
     return this._gameObjects[gameObjectType.name].length;
@@ -81,6 +82,7 @@ GameEngine.findNearestGameObject = function(gameObjectType, position) {
     return this.findGameObject(gameObjectType, minIndex);
 };
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  EMITTER FUNCTIONS                                                                                 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,6 +95,7 @@ GameEngine.now = function() {
 GameEngine.getEmitters = function() {
     return this._gameObjects["Emitter"] || [];
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  MAIN LOOP                                                                                         //

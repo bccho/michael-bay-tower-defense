@@ -62,7 +62,7 @@ function SimpleTower() {
 
 SimpleTower.prototype = new Tower();
 
-SimpleTower.prototype.update = function() {
+SimpleTower.prototype.update = function(deltaT) {
     var nearestEnemy = GameEngine.findNearestGameObject(SimpleEnemy, this._position);
     if (nearestEnemy !== undefined) {
         var u = nearestEnemy._position.clone().sub(this._position);
