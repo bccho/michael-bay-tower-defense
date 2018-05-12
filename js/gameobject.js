@@ -114,7 +114,7 @@ function AnimatedGameObject(kwargs) {
     return this;
 }
 
-AnimatedGameObject.prototype = new GameObject();
+AnimatedGameObject.prototype = createParent(GameObject);
 
 AnimatedGameObject.prototype.stop = function() {
     for (var i = 0; i < this._animations.length; i++) {

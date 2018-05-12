@@ -35,7 +35,7 @@ function Tower(kwargs) {
     return this;
 }
 
-Tower.prototype = new GameObject();
+Tower.prototype = createParent(GameObject);
 
 Tower.prototype.setArmAngle = function(angle) {
     this._arm_model.rotation.y = angle;
@@ -60,10 +60,11 @@ function SimpleTower() {
     return this;
 }
 
-SimpleTower.prototype = new Tower();
+SimpleTower.prototype = createParent(Tower);
 
 SimpleTower.prototype.update = function(deltaT) {
     var nearestEnemy = GameEngine.findNearestGameObject(HorseEnemy, this._position);
+    //console.log(nearestEnemy);
     if (nearestEnemy !== undefined) {
         var u = nearestEnemy._position.clone().sub(this._position);
         var v = new THREE.Vector3(1.0, 0.0, 0.0);

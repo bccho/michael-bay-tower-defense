@@ -4,6 +4,10 @@
 
 // takes a prototype and instantiates it in-game
 function create(gameObjectType, kwargs) {
+    return GameEngine.addGameObjectToGame(GameEngine.createGameObject(gameObjectType, kwargs));
+}
+
+function createParent(gameObjectType, kwargs)  {
     return GameEngine.createGameObject(gameObjectType, kwargs);
 }
 

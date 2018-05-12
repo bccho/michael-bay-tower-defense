@@ -20,7 +20,7 @@ function Enemy(kwargs) {
 
     return this;
 }
-Enemy.prototype = new AnimatedGameObject();
+Enemy.prototype = createParent(AnimatedGameObject);
 
 Enemy.prototype.update = function(deltaT) {
     this._position.add(this._velocity.clone().multiplyScalar(deltaT));
@@ -50,7 +50,7 @@ function SimpleEnemy(kwargs) {
 
     return this;
 }
-SimpleEnemy.prototype = new Enemy();
+SimpleEnemy.prototype = createParent(Enemy);
 
 
 // Horse animated enemy
@@ -59,4 +59,4 @@ function HorseEnemy(kwargs) {
     kwargs = setDefault(kwargs, "model_names", ["animated_models/horse.js"]);
     Enemy.call(this, kwargs);
 }
-HorseEnemy.prototype = new Enemy();
+HorseEnemy.prototype = createParent(Enemy);
