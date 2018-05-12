@@ -17,13 +17,14 @@ LevelManager.initialize = function(gameSettings) {
     setDefault(gameSettings, "initialMoney", 1000);
     setDefault(gameSettings, "towerCost", 100);
     setDefault(gameSettings, "cooldown", 1.5);
-    setDefault(gameSettings, "maxEnemies", 10);
+    setDefault(gameSettings, "maxEnemies", 0);
 
     // Initialize member attributes
     LevelManager._settings = gameSettings;
 
     LevelManager._money = gameSettings.initialMoney;
     LevelManager._health = gameSettings.initialHealth;
+    LevelManager._currentCooldown = 0;
 
     // Create GUI elements
     var textMoney = LevelManager._createDiv("Money: ", {top: "20px", left: "300px"});
