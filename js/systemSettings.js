@@ -48,12 +48,6 @@ SystemSettings.levels.level1 = {
 
         var tower = create(SimpleTower);
         tower.setArmAngle(0);
-
-        var enemy = create(HorseEnemy, {
-            position: new THREE.Vector3(-50, 0.0, -150),
-            velocity: new THREE.Vector3(0, 0, 20),
-            scale: new THREE.Vector3(0.05, 0.05, 0.05)
-        });
     }
 };
 

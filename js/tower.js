@@ -63,8 +63,12 @@ function SimpleTower() {
 SimpleTower.prototype = new Tower();
 
 SimpleTower.prototype.update = function(deltaT) {
-    // console.log("SimpleTower update");
-    this.setArmAngle(this.getArmAngle() + Math.PI / 90);
+    var nearestEnemy = GameEngine.findNearestGameObject(HorseEnemy, this._position);
+    if (nearestEnemy !== undefined) {
+        var u = nearestEnemy._position.clone().sub(this._position);
+        var v = new THREE.Vector3(1.0, 0.0, 0.0);
+        this.setArmAngle((nearestEnemy._position.z - this._position.z) < 0 ? u.angleTo(v) : ((2*Math.PI) - u.angleTo(v)));
+    }
 
     // Call base method
     GameObject.prototype.update.call(this, deltaT);

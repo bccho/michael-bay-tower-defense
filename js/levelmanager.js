@@ -3,31 +3,21 @@ var LevelManager = LevelManager || {
     _money: undefined,
     _health: undefined,
     _mouseMode: undefined,
-    _initialized: false
-};
-
-LevelManager._createDiv = function(html, style_kwargs) {
-    style_kwargs = style_kwargs || {};
-    setDefault(style_kwargs, "position", "absolute");
-    setDefault(style_kwargs, "width", "300px");
-    setDefault(style_kwargs, "height", "40px");
-    setDefault(style_kwargs, "lineHeight", "40px");
-    setDefault(style_kwargs, "color", "black");
-
-    var div = document.createElement("div");
-    for (var attr in style_kwargs) {
-        div.style[attr] = style_kwargs[attr];
-    }
-
-    div.innerHTML = html;
-    document.body.appendChild(div);
-    return div;
+    _initialized: false,
+    _cooldown: undefined, // in seconds
+    _maxEnemies: undefined,
+    _currentCooldown: 0
 };
 
 LevelManager.initialize = function(gameSettings) {
     if (!LevelManager._initialized) LevelManager.finalize();
 
     gameSettings = gameSettings || {};
+    setDefault(gameSettings, "initialHealth", 100);
+    setDefault(gameSettings, "initialMoney", 1000);
+    setDefault(gameSettings, "towerCost", 100);
+    setDefault(gameSettings, "cooldown", 1.5);
+    setDefault(gameSettings, "maxEnemies", 10);
 
     // Initialize member attributes
     LevelManager._settings = gameSettings;
@@ -60,7 +50,6 @@ LevelManager.initialize = function(gameSettings) {
     LevelManager._initialized = true;
 };
 
-
 LevelManager.finalize = function() {
     if (!LevelManager._initialized) return;
     LevelManager._initialized = false;
@@ -77,8 +66,49 @@ LevelManager.finalize = function() {
 LevelManager.update = function(deltaT) {
     if (!LevelManager._initialized) return;
 
+    // Spawn enemies
+    LevelManager._currentCooldown += deltaT;
+    if (LevelManager._currentCooldown >= LevelManager._settings.cooldown) {
+        if (GameEngine.numGameObject(HorseEnemy) < LevelManager._settings.maxEnemies) {
+            var halfWidth = ((Terrain._width - 1) * Terrain._unitSize / 2);
+            var x = (Math.random() * 2 - 1) * halfWidth;
+            create(HorseEnemy, {
+                position: new THREE.Vector3(x, 0, -halfWidth), // place randomly on left of terrain
+                velocity: new THREE.Vector3(0, 0, 20),
+                scale:    new THREE.Vector3(0.05, 0.05, 0.05)
+            });
+            LevelManager._currentCooldown = 0;
+        }
+    }
+
+    // GUI updates
     LevelManager._hud.textMoney.innerHTML = "Money: $" + LevelManager._money;
     LevelManager._hud.textHealth.innerHTML = "Health: " + LevelManager._health + " / " + LevelManager._settings.initialHealth;
+};
+
+LevelManager.takeDamage = function(amount) {
+    // TODO: take damage
+};
+
+
+/* Private methods */
+
+LevelManager._createDiv = function(html, style_kwargs) {
+    style_kwargs = style_kwargs || {};
+    setDefault(style_kwargs, "position", "absolute");
+    setDefault(style_kwargs, "width", "300px");
+    setDefault(style_kwargs, "height", "40px");
+    setDefault(style_kwargs, "lineHeight", "40px");
+    setDefault(style_kwargs, "color", "black");
+
+    var div = document.createElement("div");
+    for (var attr in style_kwargs) {
+        div.style[attr] = style_kwargs[attr];
+    }
+
+    div.innerHTML = html;
+    document.body.appendChild(div);
+    return div;
 };
 
 LevelManager._newTower = function(position) {
