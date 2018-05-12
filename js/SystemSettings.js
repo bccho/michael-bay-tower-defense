@@ -41,7 +41,8 @@ SystemSettings.levels.level1 = {
     // Scene
     initialize: function() {
         var elevationFunction = function(i, j) {
-            return Math.random() * 15.0;
+            return (noise.perlin2(i / 5, j / 5)) * 40;
+            // return Math.random() * 15.0;
         };
         Terrain.initialize({elevationInitializer: elevationFunction});
         Scene.addObject(Terrain.getModel());
