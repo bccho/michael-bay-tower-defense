@@ -67,7 +67,8 @@ SimpleTower.prototype.update = function(deltaT) {
     if (nearestEnemy !== undefined) {
         var u = nearestEnemy._position.clone().sub(this._position);
         var v = new THREE.Vector3(1.0, 0.0, 0.0);
-        this.setArmAngle((nearestEnemy._position.z - this._position.z) < 0 ? u.angleTo(v) : ((2*Math.PI) - u.angleTo(v)));
+        this.setArmAngle((nearestEnemy._position.z - this._position.z) < 0 ?
+            u.angleTo(v) : ((2 * Math.PI) - u.angleTo(v)));
     }
 
     // Call base method

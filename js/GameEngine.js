@@ -14,6 +14,7 @@ GameEngine.start = function() {
     this._prev_t = Date.now();
     this._cur_t  = Date.now();
     this._isRunning = true;
+    this._gameObjects = [];
 
     Scene.removeObjects();
 };
@@ -65,7 +66,7 @@ GameEngine.findGameObject = function(gameObjectType, i) {
 // determines the index in the game object list of the instance nearest some position
 GameEngine.findNearestGameObject = function(gameObjectType, position) {
     var minDist = Number.POSITIVE_INFINITY;
-    var minIndex = 0;;
+    var minIndex = -1;
     for (var i = 0; i < this._gameObjects.length; i++) {
         if (! (this._gameObjects[i] instanceof gameObjectType)) continue;
 
