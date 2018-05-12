@@ -53,6 +53,11 @@ GameEngine.destroyGameObject = function(gameObjectRef) {
     Scene.removeObject(gameObjectRef.getModel());
 };
 
+GameEngine.numGameObject = function(gameObjectType) {
+    if (!(gameObjectType.name in this._gameObjects)) return 0;
+    return this._gameObjects[gameObjectType.name].length;
+};
+
 // locates the ith instance of a particular type of GameObject - returns undefined if no such instance
 GameEngine.findGameObject = function(gameObjectType, i) {
     if (!(gameObjectType.name in this._gameObjects)) return undefined;
