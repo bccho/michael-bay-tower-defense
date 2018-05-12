@@ -50,9 +50,9 @@ Tower.prototype.getArmAngle = function() {
 function SimpleTower() {
     var phong = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
     var tower_body = new THREE.Mesh(new THREE.BoxGeometry(10, 20, 10), phong);
-    var tower_arm = new THREE.Mesh(new THREE.BoxGeometry(20, 5, 5), phong);
+    var tower_arm = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 15), phong);
     tower_body.position.set(0.0, 10.0, 0.0);
-    tower_arm.position.set(7.5, 15.0, 0.0);
+    tower_arm.position.set(0.0, 15.0, 7.5);
 
     var kwargs = {body_meshes: [tower_body], arm_meshes: [tower_arm]};
     Tower.call(this, kwargs);
@@ -63,12 +63,11 @@ function SimpleTower() {
 SimpleTower.prototype = new Tower();
 
 SimpleTower.prototype.update = function(deltaT) {
-    var nearestEnemy = GameEngine.findNearestGameObject(HorseEnemy, this._position);
+    var nearestEnemy = GameEngine.findNearestGameObject(Enemy, this._position);
     if (nearestEnemy !== undefined) {
-        var u = nearestEnemy._position.clone().sub(this._position);
-        var v = new THREE.Vector3(1.0, 0.0, 0.0);
-        this.setArmAngle((nearestEnemy._position.z - this._position.z) < 0 ?
-            u.angleTo(v) : ((2 * Math.PI) - u.angleTo(v)));
+        var vecToEnemy = nearestEnemy._position.clone().sub(this._position);
+        this.setArmAngle(Math.atan2(vecToEnemy.x, vecToEnemy.z));
+        // this._arm_model.lookAt(vecToEnemy); // TODO: can handle vertical angle, but from global coordinates, not local!
     }
 
     // Call base method
