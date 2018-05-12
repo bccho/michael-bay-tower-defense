@@ -2,7 +2,7 @@
 // If you want to change apperance of the materials, or lighting,
 // this is the file to look at.
 // Important methods include addition and removal of objects from
-// three.js scene, that will be used in main.js
+// three.js scene, that will be used in Main.js
 
 "use strict";
 
