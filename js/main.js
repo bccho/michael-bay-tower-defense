@@ -3,10 +3,11 @@ var Main = Main || {};
 // called when the gui params change and we need to update mesh
 Main.systemChangeCallback = function(InputSettings) {
     // Start game engine from scratch
+    LevelManager.finalize();
     GameEngine.start();
 
     // Initialize level manager
-    // TODO: Kraig, instantiate your level manager here using InputSettings.gameSettings
+    LevelManager.initialize(InputSettings.gameSettings);
 
     // Create the scene
     InputSettings.initialize();
@@ -17,7 +18,7 @@ window.onload = function() {
     Student.updateHTML();
 
     // Setup renderer, scene and gui
-    Gui.init(Main.controlsChangeCallback, Main.displayChangeCallback);
+    Gui.init();
     Scene.create();
     Renderer.create(Scene, document.getElementById("canvas"));
     InputManager.initialize();

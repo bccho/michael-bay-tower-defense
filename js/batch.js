@@ -3,10 +3,11 @@ var Batch = Batch || { };
 // called when the gui params change and we need to update mesh
 Batch.systemChangeCallback = function(InputSettings) {
     // Start game engine from scratch
+    LevelManager.finalize();
     GameEngine.start();
 
     // Initialize level manager
-    // TODO: Kraig, instantiate your level manager here using InputSettings.gameSettings
+    LevelManager.initialize(InputSettings.gameSettings);
 
     // Create the scene
     InputSettings.initialize();

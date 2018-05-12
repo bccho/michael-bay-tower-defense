@@ -63,7 +63,7 @@ Gui.toCommandString = function () {
     return url;
 };
 
-Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeCallback ) {
+Gui.init = function() {
     // Populate systems. TODO: cross our fingers and hope that it's in order of definition
     Gui.levels = [];
     for (var lvl in SystemSettings.levels) {

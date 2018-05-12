@@ -124,6 +124,7 @@ GameEngine.mainLoop = function() {
                 list[i].update(deltaT);
             }
         }
+        LevelManager.update(deltaT);
 
         // Update what's on the screen
         Renderer.update();

@@ -34,7 +34,8 @@ SystemSettings.levels.level1 = {
     // Game settings
     gameSettings: {
         initialHealth: 100,
-        initialMoney: 1000
+        initialMoney: 1000,
+        towerCost: 100
     },
 
     // Scene
@@ -52,16 +53,6 @@ SystemSettings.levels.level1 = {
             position: new THREE.Vector3(-50, 0.0, -150),
             velocity: new THREE.Vector3(0, 0, 20),
             scale: new THREE.Vector3(0.05, 0.05, 0.05)
-        });
-
-        InputManager.addClickTerrainEvent(function(event, intersects) {
-            if (intersects.length === 0) return;
-
-            var radius = 2.0;
-            var phong = new THREE.MeshPhongMaterial( {color: 0xFF0000} );
-            var sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, 32, 32), phong);
-            sphere.position.copy(intersects[0].point);
-            Scene.addObject(sphere);
         });
     }
 };
