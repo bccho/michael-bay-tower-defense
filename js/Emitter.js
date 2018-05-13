@@ -124,7 +124,7 @@ function Emitter(kwargs) {
 
     return this;
 }
-Emitter.prototype = new GameObject();
+Emitter.prototype = createParent(GameObject);
 
 Emitter.prototype.update = function(delta_t) {
     // how many particles should we add?

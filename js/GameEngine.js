@@ -38,6 +38,13 @@ GameEngine.createGameObject = function(gameObjectType, kwargs) {
     return obj;
 };
 
+// adds game object to the list of in-game instances, adds to scene, and returns reference
+GameEngine.addGameObjectToGame = function(gameObjectRef) {
+    this._gameObjects.push(gameObjectRef);  // add instance to list
+    Scene.addObject(gameObjectRef.getModel());
+    return gameObjectRef;
+};
+
 // removes game object from list of in-game instances, removes from scene, and does not return reference
 GameEngine.destroyGameObject = function(gameObjectRef) {
     var index = this._gameObjects.indexOf(gameObjectRef);
