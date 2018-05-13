@@ -82,9 +82,8 @@ SimpleTower.prototype.update = function(deltaT) {
             u.angleTo(v) : ((2 * Math.PI) - u.angleTo(v)));
 
         // shoot at target if we can
-        console.log(this._range);
         if (nearestEnemy._position.distanceTo(this._position) <= this._range && this._timeSinceShot >= this._cooldown) {
-            create(Bullet, {"position": new THREE.Vector3(this._position.x, this._position.y + 15, this._position.z),
+            create(Bullet, {"position": new THREE.Vector3(this._position.x, this._position.y, this._position.z),
                 "velocity": nearestEnemy._position.clone().sub(this._position).normalize().multiplyScalar(500)});
             this._timeSinceShot = 0;
         }
