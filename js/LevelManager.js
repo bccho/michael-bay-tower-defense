@@ -70,7 +70,7 @@ LevelManager.update = function(deltaT) {
     // Spawn enemies
     LevelManager._currentCooldown += deltaT;
     if (LevelManager._currentCooldown >= LevelManager._settings.cooldown) {
-        if (GameEngine.numGameObject(HorseEnemy) < LevelManager._settings.maxEnemies) {
+        if (GameEngine.numGameObject(Enemy) < LevelManager._settings.maxEnemies) {
             var z = Terrain._min.z;
             var x = Math.random() * (Terrain._max.x - Terrain._min.x) + Terrain._min.x;
             create(HorseEnemy, {

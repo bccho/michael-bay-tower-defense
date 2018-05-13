@@ -50,8 +50,8 @@ GameEngine.destroyGameObject = function(gameObjectRef) {
 // returns number of game objects of a given type currently in game
 GameEngine.numGameObject = function(gameObjectType) {
     var count = 0;
-    for (var obj in this._gameObjects) {
-        if (obj instanceof gameObjectType)
+    for (var i = 0; i < this._gameObjects.length; i++) {
+        if (this._gameObjects[i] instanceof gameObjectType)
             count++;
     }
     return count;
