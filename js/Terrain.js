@@ -37,8 +37,8 @@ Terrain.initialize = function(kwargs) {
     // Create mesh: vertex positions, based on ClothInitializer
     this._positions = new THREE.BufferAttribute(new Float32Array(this._width * this._height * 3), 3);
     var idx = 0;
-    for (i = 0; i < this._width; i++) {
-        for (j = 0; j < this._height; j++) {
+    for (j = 0; j < this._height; j++) {
+        for (i = 0; i < this._width; i++) {
             var pos = new THREE.Vector3(i * this._unitSize, this._elevationMap[i][j], j * this._unitSize);
             pos.add(this._offset);
             setElement(idx, this._positions, pos);

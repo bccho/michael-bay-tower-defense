@@ -35,15 +35,17 @@ SystemSettings.levels.level1 = {
     gameSettings: {
         initialHealth: 100,
         initialMoney: 1000,
-        towerCost: 100
+        towerCost: 100,
+        maxEnemies: 15
     },
 
     // Scene
     initialize: function() {
         var elevationFunction = function(i, j) {
-            return Math.random() * 15.0;
+            return (noise.perlin2(i / 5, j / 5)) * 40;
+            // return Math.random() * 15.0;
         };
-        Terrain.initialize({elevationInitializer: elevationFunction});
+        Terrain.initialize({elevationInitializer: elevationFunction, width: 20, height: 20});
         Scene.addObject(Terrain.getModel());
 
         var tower = create(SimpleTower);

@@ -6,10 +6,7 @@ var GameEngine = GameEngine || {
     _prev_t: undefined,
     _cur_t: undefined,
     _isRunning: false,
-    _gameObjects: [],
-    _nameToTypeMap: {},
-    _children: {},
-    _parents: {}
+    _gameObjects: []
 };
 
 // Total fresh start
@@ -17,6 +14,7 @@ GameEngine.start = function() {
     this._prev_t = Date.now();
     this._cur_t  = Date.now();
     this._isRunning = true;
+    this._gameObjects = [];
 
     Scene.removeObjects();
 };
@@ -32,22 +30,11 @@ GameEngine.pause = function () {
 //  GAME OBJECT FUNCTIONS                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// creates a game object  but does not add to list or scene
+// creates a game object, adds to the list of in-game instances, adds to scene, and returns reference
 GameEngine.createGameObject = function(gameObjectType, kwargs) {
     var obj = new gameObjectType(kwargs);
-    if (!(gameObjectType.name in this._nameToTypeMap)) {  // if this type hasn't been seen before, track inheritance
-        this._nameToTypeMap[gameObjectType.name] = gameObjectType;
-        this._children[gameObjectType.name] = [];
-        this._parents[gameObjectType.name] = [];
-        for (var name1 in this._nameToTypeMap) {
-            for (var name2 in this._nameToTypeMap) {
-                if (new this._nameToTypeMap[name1]() instanceof this._nameToTypeMap[name2]) {
-                    this._children[name2].push(name1);
-                    this._parents[name1].push(name2);
-                }
-            }
-        }
-    }
+    this._gameObjects.push(obj);  // add instance to list
+    Scene.addObject(obj.getModel());
     return obj;
 };
 
@@ -86,7 +73,7 @@ GameEngine.findGameObject = function(gameObjectType, i) {
 // determines the index in the game object list of the instance nearest some position
 GameEngine.findNearestGameObject = function(gameObjectType, position) {
     var minDist = Number.POSITIVE_INFINITY;
-    var minIndex = 0;;
+    var minIndex = -1;
     for (var i = 0; i < this._gameObjects.length; i++) {
         if (! (this._gameObjects[i] instanceof gameObjectType)) continue;
 
