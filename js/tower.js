@@ -44,8 +44,9 @@ function Tower(kwargs) {
 
 Tower.prototype = new GameObject();
 
-Tower.prototype.setArmAngle = function(angle) {
-    this._arm_model.rotation.y = angle;
+Tower.prototype.setArmAngle = function(angle, vangle) {
+    if (angle !== undefined) this._arm_model.rotation.y = angle;
+    if (vangle !== undefined) this._arm_model.rotation.y = angle;
 };
 
 Tower.prototype.getArmAngle = function() {
@@ -85,9 +86,13 @@ SimpleTower.prototype.update = function(deltaT) {
 
         // shoot at target if we can
         if (nearestEnemy._position.distanceTo(p) <= this._range && this._timeSinceShot >= this._cooldown) {
+            var targetAngle = nearestEnemy._position.clone().sub(p).normalize();
+            // Jitter target angle
+            targetAngle.add(sampleSphere(0.1));
+            // Create bullet
             create(Bullet, {
                 "position": p.clone(),
-                "velocity": nearestEnemy._position.clone().sub(p).normalize().multiplyScalar(250),
+                "velocity": targetAngle.multiplyScalar(250),
                 "damage": 10,
                 "emitter": Explosion,
                 "emitter_kwargs": {lifespan: 0.3, explosionSpeed: 10, particlesFreq: 500}
