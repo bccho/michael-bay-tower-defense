@@ -134,3 +134,18 @@ function setDefault(dict, key, defaultValue) {
 function lerp(x0, x1, alpha) {
     return x0 * (1 - alpha) + x1 * alpha;
 }
+
+function sampleUnitCube() {
+    return new THREE.Vector3( 1.0 - 2.0 * Math.random(),
+        1.0 - 2.0 * Math.random(),
+        1.0 - 2.0 * Math.random() );
+}
+
+function sampleSphere(r) {
+    var pos;
+    do {
+        pos = sampleUnitCube();
+    } while (pos.length() > 1);
+    pos = pos.multiplyScalar(r / pos.length());
+    return pos;
+}

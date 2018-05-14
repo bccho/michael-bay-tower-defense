@@ -15,21 +15,6 @@ VoidInitializer.prototype.initialize = function ( particleAttributes, toSpawn ) 
 // Basic Initializer
 ////////////////////////////////////////////////////////////////////////////////
 
-function sampleUnitCube() {
-    return new THREE.Vector3( 1.0 - 2.0 * Math.random(),
-        1.0 - 2.0 * Math.random(),
-        1.0 - 2.0 * Math.random() );
-}
-
-function sampleSphere(r) {
-    var pos;
-    do {
-        pos = sampleUnitCube();
-    } while (pos.length() > 1);
-    pos = pos.multiplyScalar(r / pos.length());
-    return pos;
-}
-
 function SphereInitializer ( opts ) {
     this._opts = opts;
     return this;
