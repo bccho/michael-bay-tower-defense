@@ -340,37 +340,40 @@ function AnimationInitializer ( opts ) {
 // we recommend that you do not look too closely in here ;-)
 AnimationInitializer.prototype.getMorphedMesh = function () {
 
-     if ( ParticleEngine._meshes[0] !== undefined  && ParticleEngine._animations[0] !== undefined){
+    // Can't globally access meshes anymore. RIP ParticleEngine 2018
+    return undefined;
 
-        var mesh       = ParticleEngine._meshes[0];
-
-        var vertices   = [];
-        var n_vertices = mesh.geometry.vertices.length;
-
-        var faces      = ParticleEngine._meshes[0].geometry.faces;
-
-        var morphInfluences = ParticleEngine._meshes[0].morphTargetInfluences;
-        var morphs          = ParticleEngine._meshes[0].geometry.morphTargets;
-
-        if ( morphs === undefined ) {
-            return undefined;
-        }
-        for ( var i = 0 ; i < morphs.length ; ++i ) {
-
-            if ( morphInfluences[i] !== 0.0 ) {
-                for ( var j = 0 ; j < n_vertices ; ++j ) {
-                    vertices[j] = new THREE.Vector3( 0.0, 0.0, 0.0 );
-                    vertices[j].add ( morphs[i].vertices[j] );
-                }
-            }
-        }
-        return { vertices : vertices, faces : faces, scale: mesh.scale, position: mesh.position };
-
-    } else {
-
-        return undefined;
-
-    }
+    //  if ( ParticleEngine._meshes[0] !== undefined  && ParticleEngine._animations[0] !== undefined){
+    //
+    //     var mesh       = ParticleEngine._meshes[0];
+    //
+    //     var vertices   = [];
+    //     var n_vertices = mesh.geometry.vertices.length;
+    //
+    //     var faces      = ParticleEngine._meshes[0].geometry.faces;
+    //
+    //     var morphInfluences = ParticleEngine._meshes[0].morphTargetInfluences;
+    //     var morphs          = ParticleEngine._meshes[0].geometry.morphTargets;
+    //
+    //     if ( morphs === undefined ) {
+    //         return undefined;
+    //     }
+    //     for ( var i = 0 ; i < morphs.length ; ++i ) {
+    //
+    //         if ( morphInfluences[i] !== 0.0 ) {
+    //             for ( var j = 0 ; j < n_vertices ; ++j ) {
+    //                 vertices[j] = new THREE.Vector3( 0.0, 0.0, 0.0 );
+    //                 vertices[j].add ( morphs[i].vertices[j] );
+    //             }
+    //         }
+    //     }
+    //     return { vertices : vertices, faces : faces, scale: mesh.scale, position: mesh.position };
+    //
+    // } else {
+    //
+    //     return undefined;
+    //
+    // }
 };
 
 AnimationInitializer.prototype.initializePositions = function ( positions, toSpawn, mesh ) {

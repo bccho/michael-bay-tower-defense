@@ -15,14 +15,14 @@ function Tower(kwargs) {
             for (i = 0; i < value.length; i++) {
                 this._body_model.add(value[i]);
             }
-            delete kwargs.body_meshes;
         } else if (option === "arm_meshes") {
             this._arm_model = new THREE.Group();
             for (i = 0; i < value.length; i++) {
                 this._arm_model.add(value[i]);
             }
-            delete kwargs.arm_meshes;
-        }
+        } else continue;
+        // Delete option if dealt with here
+        delete kwargs[option];
     }
 
     kwargs = setDefault(kwargs, "heightAboveGround", 0);
@@ -62,10 +62,10 @@ function SimpleTower() {
 
 SimpleTower.prototype = new Tower();
 
-SimpleTower.prototype.update = function() {
+SimpleTower.prototype.update = function(deltaT) {
     // console.log("SimpleTower update");
     this.setArmAngle(this.getArmAngle() + Math.PI / 90);
 
     // Call base method
-    GameObject.prototype.update.call(this);
+    GameObject.prototype.update.call(this, deltaT);
 };

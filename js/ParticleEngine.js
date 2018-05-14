@@ -1,125 +1,8 @@
-////////////////////////////////////////////////////////////////////////////////
-// COS 426 Assignement 4 stub                                                 //
-// Particle Systems                                                           //
-// Many ideas here are taken from SPARKS.js                                   //
-////////////////////////////////////////////////////////////////////////////////
+// Emitter controls one particle system. Inherits from GameObject
+function Emitter(kwargs) {
+    kwargs = kwargs || {};
 
-// TODO :
-// - shader requires more exploration / better interface
-// - change moving particle to setting it invisible in shader
-// - initializers and particle engine must work with all the sahder supported attributes
-// - incorporate gui controls
-
-// Singleton Engine - we will have one particle engine per application,
-// driving the entire application.
-var ParticleEngine = ParticleEngine || new ( function() {
-    var _self      = this;
-
-    // Instance variables - list of emitters, and global delta time
-    _self._emitters   = [];
-    _self._meshes     = [];
-    _self._animations = [];
-    _self._isRunning  = false;
-    _self._emitterCreated = []; // time of creation of emiiter
-    _self.alive = true;
-
-    _self.addEmitter = function ( emitter ) {
-        _self._emitters.push( emitter );
-        _self._emitterCreated.push(Date.now());
-    };
-
-    _self.removeEmitters = function() {
-        _self._emitters = [];
-        _self._emitterCreated = [];
-    };
-
-    _self.addMesh = function ( mesh ) {
-        _self._meshes.push( mesh );
-    };
-
-    _self.removeMeshes = function() {
-        _self._meshes = [];
-    };
-
-    _self.addAnimation = function ( animation ) {
-        _self._animations.push( animation );
-        animation.play()
-    };
-
-    _self.removeAnimations = function () {
-        for ( var i = 0 ; i < _self._animations.length; ++i ) {
-            _self._animations[i].isPlaying = false;
-        }
-        _self._animations = [];
-    };
-
-    _self.start = function () {
-        _self._isRunning = true;
-    };
-
-    _self.step = function (deltaT) {
-        var i;
-        for ( i = 0; i < _self._animations.length ; i++ ) {
-            _self._animations[i].update( deltaT * 1000.0 );
-        }
-
-        for ( i = 0 ; i < _self._emitters.length ; i++ ) {
-            var currEmitter = _self._emitters[i];
-            currEmitter.update( deltaT );
-            if (currEmitter._lifespan !== undefined)
-            {
-                if (Date.now() - _self._emitterCreated[i] > currEmitter._lifespan)
-                {
-                    // remove the current emitter
-                    const index = _self._emitters.indexOf(currEmitter);
-                    currEmitter.kill();
-
-                    if (index !== -1)
-                    {
-                        _self._emitters.splice(index, 1);
-                        _self._emitterCreated.splice(index, 1);
-                    }
-                }
-            }
-
-        }
-
-    };
-
-    _self.stop = function () {
-        _self._isRunning = false;
-    };
-
-    _self.pause = function () {
-        if ( _self._isRunning ) {
-            _self.stop();
-        } else {
-            _self.start();
-        }
-    };
-
-    _self.restart = function () {
-        _self.stop();
-        for ( var i = 0 ; i < _self._emitters.length ; ++i ) {
-            _self._emitters[i].restart();
-        }
-        _self.start();
-    };
-
-    _self.getDrawableParticles = function ( emitter_idx ) {
-        return _self._emitters[emitter_idx].getDrawableParticles();
-    };
-
-    _self.getEmitters = function( ) {
-        return _self._emitters;
-    };
-
-    return _self;
-})();
-
-function Emitter ( opts ) {
-    // console.log ( "Emiiter", this );
-    // initialize some base variables needed by emitter, that we will extract from options
+    // Initialize member variables
     this._maxParticleCount     = undefined;
     this._particlesPerSecond   = undefined;
     this._initializer          = undefined;
@@ -137,9 +20,11 @@ function Emitter ( opts ) {
         dampening:     3
     };
 
-    // parse options
-    for ( var option in opts ) {
-        var value = opts[option];
+    this._created = GameEngine.now(); // time of creation of emitter
+
+    // Parse options
+    for (var option in kwargs) {
+        var value = kwargs[option];
         if ( option === "material" ) {
             this._material = value;
         } else if ( option === "maxParticles" ) {
@@ -160,12 +45,13 @@ function Emitter ( opts ) {
             this._height = value;
         } else if ( option === "lifespan") {
             this._lifespan = value;
-        } else {
-            console.log( "Unknown option " + option + "! Make sure to register it!" )
-        }
+        } else continue;
+        // Delete option if dealt with here
+        delete kwargs[option];
     }
+    GameObject.call(this, kwargs);
 
-    if ( this._cloth === true ) {
+    if (this._cloth === true) {
         this._maxParticleCount = this._width * this._height;
         this._particlesPerSecond = 1e8 * this._maxParticleCount;
     }
@@ -238,30 +124,9 @@ function Emitter ( opts ) {
 
     return this;
 }
+Emitter.prototype = new GameObject();
 
-Emitter.prototype.restart = function() {
-    var i, j;
-
-    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
-        this._initialized[i] = 0;
-    }
-
-    for ( var attributeKey in this._particleAttributes ) {
-        var attribute       = this._particleAttributes[attributeKey];
-        var attributeArray  = attribute.array;
-        var attributeLength = attribute.itemSize;
-
-        for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
-            for ( j = 0 ; j < attributeLength ; ++j ) {
-                attributeArray[ attributeLength * i + j ] = 1e-9;
-            }
-        }
-
-        attribute.needsUpdate = true;
-    }
-};
-
-Emitter.prototype.update = function( delta_t ) {
+Emitter.prototype.update = function(delta_t) {
     // how many particles should we add?
     var toAdd = Math.floor( delta_t * this._particlesPerSecond );
 
@@ -286,13 +151,36 @@ Emitter.prototype.update = function( delta_t ) {
     }
 };
 
+Emitter.prototype.getModel = function () {
+    return this._drawableParticles;
+};
+
+
+
+Emitter.prototype.restart = function() {
+    var i, j;
+
+    for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
+        this._initialized[i] = 0;
+    }
+
+    for ( var attributeKey in this._particleAttributes ) {
+        var attribute       = this._particleAttributes[attributeKey];
+        var attributeArray  = attribute.array;
+        var attributeLength = attribute.itemSize;
+
+        for ( i = 0 ; i < this._maxParticleCount ; ++i ) {
+            for ( j = 0 ; j < attributeLength ; ++j ) {
+                attributeArray[ attributeLength * i + j ] = 1e-9;
+            }
+        }
+
+        attribute.needsUpdate = true;
+    }
+};
 
 Emitter.prototype.enableSorting = function( val ) {
     this._sorting = val;
-};
-
-Emitter.prototype.getDrawableParticles = function () {
-    return this._drawableParticles;
 };
 
 Emitter.prototype.sortParticles = function () {
@@ -349,12 +237,3 @@ Emitter.prototype.getSpawnable = function ( toAdd ) {
 
     return toSpawn;
 };
-
-Emitter.prototype.kill = function ()
-{
-    this.alive = false;
-    Scene.removeObject( this.getDrawableParticles() );
-    this._drawableParticles = [];
-
-}
-
