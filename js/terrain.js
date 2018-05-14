@@ -96,6 +96,13 @@ Terrain.xyToGrid = function(x, y) {
     return [x, y];
 };
 
+// Converts from (i, j) grid coordinates to (x, y) world terrain coordinates.
+Terrain.gridToXY = function (i, j) {
+    i = i * this._unitSize + this._offset.x;
+    j = j * this._unitSize + this._offset.z;
+    return [i, j];
+};
+
 // Linearly interpolates elevation map at (fractional) grid coordinates (i, j)
 Terrain.interpolateElevation = function(i, j) {
     // Return undefined if outside elevation map bounds
@@ -115,6 +122,60 @@ Terrain.getElevation = function(x, y) {
     var i, j;
     [i, j] = this.xyToGrid(x, y);
     return this.interpolateElevation(i, j);
+};
+
+// Return a graph of the terrain used for naviagation.
+Terrain.getGraph = function () {
+    var myMap = this._elevationMap;
+    var g = new graphlib.Graph();
+    var idToXY = {};
+    var nodeId = 0;
+    var destNodeID = [];
+    var height = myMap[0].length;
+    var width = myMap.length;
+    for (var i = 0; i < myMap.length; i++)
+    {
+        for (var j = 0; j < myMap[0].length; j++) {
+            nodeId = Terrain.getNodeId(i, j);
+
+            // add to dictionary for client
+            idToXY[nodeId] = this.gridToXY(i, j);
+
+            // connect graph
+            if ((i + 1) < height)
+            {
+                g.setEdge(nodeId, Terrain.getNodeId(i + 1, j), Math.abs(myMap[i + 1][j] - myMap[i][j]));
+            }
+
+            if ((i - 1) >= 0)
+            {
+                g.setEdge(nodeId, Terrain.getNodeId(i - 1, j), Math.abs(myMap[i - 1][j] - myMap[i][j]));
+            }
+
+            if ((j + 1 < width))
+            {
+                g.setEdge(nodeId, Terrain.getNodeId(i, j + 1), Math.abs(myMap[i][j + 1] - myMap[i][j]));
+            }
+
+            if ((j - 1) >= 0)
+            {
+                g.setEdge(nodeId, Terrain.getNodeId(i, j - 1), Math.abs(myMap[i][j - 1] - myMap[i][j]));
+            }
+
+            if (j === width - 1)
+            {
+                destNodeID.push(nodeId);
+            }
+
+        }
+    }
+
+    return {g: g, idToXY: idToXY, destNodeID: destNodeID};
+};
+
+// Helper function. Should not be called by client
+Terrain.getNodeId = function (i, j) {
+    return String(this._height * i + j);
 };
 
 // TODO: morph operations on terrain...
