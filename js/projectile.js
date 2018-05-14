@@ -7,6 +7,7 @@ function Projectile(kwargs) {
     this._blastRadius = 0;
     this._velocity = new THREE.Vector3();
     this._emitter = undefined;
+    this._emitter_kwargs = undefined;
 
     // Parse options
     for (var option in kwargs) {
@@ -19,6 +20,8 @@ function Projectile(kwargs) {
             this._blastRadius = value;
         } else if (option === "emitter") {
             this._emitter = value;
+        } else if (option === "emitter_kwargs") {
+            this._emitter_kwargs = value;
         } else continue;
         // Delete option if dealt with here
         delete kwargs[option];
@@ -53,11 +56,15 @@ Projectile.prototype.update = function(deltaT) {
     var intersections = raycaster.intersectObjects(objectsToIntersect, true);
     if (intersections.length > 0) {
         if (intersections[0].distance <= p.distanceTo(nextPos)) {  // will collide this step
-            if (this._emitter !== undefined)
-                create(this._emitter, {"position": intersections[0].point});
+            // Make explosion
+            if (this._emitter !== undefined) {
+                this._emitter_kwargs = this._emitter_kwargs || {};
+                setDefault(this._emitter_kwargs, "position", intersections[0].point);
+                create(this._emitter, this._emitter_kwargs);
+            }
 
-            // hit everything in blast radius proportional to distance
-            for (var i = 0; i < enemies.length; i++) {
+            // Hit everything in blast radius proportional to distance
+            for (i = 0; i < enemies.length; i++) {
                 var dist = enemies[i]._position.distanceTo(nextPos);
                 if (dist < this._blastRadius) {
                     enemies[i].takeDamage(((this._blastRadius - dist) / this._blastRadius) * this._damage);

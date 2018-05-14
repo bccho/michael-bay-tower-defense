@@ -88,7 +88,9 @@ SimpleTower.prototype.update = function(deltaT) {
             create(Bullet, {
                 "position": p.clone(),
                 "velocity": nearestEnemy._position.clone().sub(p).normalize().multiplyScalar(250),
-                "damage": 10
+                "damage": 10,
+                "emitter": Explosion,
+                "emitter_kwargs": {lifespan: 0.3, explosionSpeed: 10, particlesFreq: 500}
             });
             this._timeSinceShot = 0;
         }

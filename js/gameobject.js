@@ -57,9 +57,11 @@ GameObject.prototype.update = function() {
     }
 
     // Update model with position and rotation
-    this._model.position.copy(this._position);
-    this._model.rotation.y = this._angle;
-    // TODO: vertical angle
+    if (this._model !== undefined) {
+        this._model.position.copy(this._position);
+        this._model.rotation.y = this._angle;
+        // TODO: vertical angle
+    }
 };
 
 GameObject.prototype.getModel = function() {

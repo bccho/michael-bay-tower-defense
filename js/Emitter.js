@@ -117,6 +117,8 @@ function Emitter(kwargs) {
         this._drawableParticles = new THREE.PointCloud( this._particles, this._material );
     }
 
+    this._model = this._drawableParticles;
+
     return this;
 }
 Emitter.prototype = new GameObject();
@@ -144,11 +146,14 @@ Emitter.prototype.update = function(delta_t) {
     if ( this._cloth === true ) {
         this._particles.computeVertexNormals();
     }
+
+    // Call base method
+    GameObject.prototype.update.call(this);
 };
 
-Emitter.prototype.getModel = function () {
-    return this._drawableParticles;
-};
+// Emitter.prototype.getModel = function () {
+//     return this._drawableParticles;
+// };
 
 
 
