@@ -3,7 +3,8 @@ function Projectile(kwargs) {
     kwargs = kwargs || {};
 
     // Initialize member variables
-    this._damage = 1;
+    this._damage = 0;
+    this._blastRadius = 0;
     this._velocity = new THREE.Vector3();
     this._emitter = undefined;
 
@@ -14,6 +15,8 @@ function Projectile(kwargs) {
             this._velocity = value;
         } else if (option === "damage") {
             this._damage = value;
+        } else if (option == "blastRadius") {
+            this._blastRadius = value;
         } else if (option === "emitter") {
             this._emitter = value;
         } else continue;
@@ -21,7 +24,7 @@ function Projectile(kwargs) {
         delete kwargs[option];
     }
 
-    kwargs = setDefault(kwargs, "heightAboveGround", 0);
+    kwargs = setDefault(kwargs, "heightAboveGround", undefined);
     GameObject.call(this, kwargs);
 
     return this;
@@ -29,17 +32,38 @@ function Projectile(kwargs) {
 Projectile.prototype = new GameObject();
 
 Projectile.prototype.update = function(deltaT) {
+
+    // compute next position
     var p = this._position.clone();
     var v = this._velocity.clone();
     var nextPos = p.clone().add(v.clone().multiplyScalar(deltaT));
+
+    // initialize raycaster
     var raycaster = new THREE.Raycaster(p.clone(), nextPos.clone().sub(p).normalize());
-    var intersections = raycaster.intersectObjects(Scene._objects, false);
+
+    // make list of gameobject models to intersect (and a map for converting back to gameobjects)
+    var enemies = GameEngine.findAllGameObjects(Enemy);
+    var objectsToIntersect = [];
+    for (var i = 0; i < enemies.length; i++) {
+        objectsToIntersect.push(enemies[i].getModel());
+    }
+    objectsToIntersect.push(Terrain.getModel());
+
+    // intersect the objects - if collision occurs, create emitter.  if collision near enemy, do damage
+    var intersections = raycaster.intersectObjects(objectsToIntersect, true);
     if (intersections.length > 0) {
         if (intersections[0].distance <= p.distanceTo(nextPos)) {  // will collide this step
             if (this._emitter !== undefined)
                 create(this._emitter, {"position": intersections[0].point});
-            if (intersections[0].object instanceof Enemy)
-                intersections[0].object.takeDamage(this._damage);
+
+            // hit everything in blast radius proportional to distance
+            for (var i = 0; i < enemies.length; i++) {
+                var dist = enemies[i]._position.distanceTo(nextPos);
+                if (dist < this._blastRadius) {
+                    enemies[i].takeDamage(((this._blastRadius - dist) / this._blastRadius) * this._damage);
+                }
+            }
+
             destroy(this);
             return;
         }
@@ -63,6 +87,7 @@ function Bullet(kwargs) {
     body.position.set(0.0, radius, 0.0);
 
     kwargs = setDefault(kwargs, "meshes", [body]);
+    kwargs = setDefault(kwargs, "blastRadius", 10);
     //kwargs = setDefault(kwargs, "emitter", Explosion);
 
     Projectile.call(this, kwargs);

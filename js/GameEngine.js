@@ -38,13 +38,6 @@ GameEngine.createGameObject = function(gameObjectType, kwargs) {
     return obj;
 };
 
-// adds game object to the list of in-game instances, adds to scene, and returns reference
-GameEngine.addGameObjectToGame = function(gameObjectRef) {
-    this._gameObjects.push(gameObjectRef);  // add instance to list
-    Scene.addObject(gameObjectRef.getModel());
-    return gameObjectRef;
-};
-
 // removes game object from list of in-game instances, removes from scene, and does not return reference
 GameEngine.destroyGameObject = function(gameObjectRef) {
     var index = this._gameObjects.indexOf(gameObjectRef);
@@ -62,6 +55,18 @@ GameEngine.numGameObject = function(gameObjectType) {
             count++;
     }
     return count;
+};
+
+// returns list of all game objects of a given type
+GameEngine.findAllGameObjects = function(gameObjectType) {
+    var list = [];
+    for (var i = 0; i < this._gameObjects.length; i++) {
+        var obj = this._gameObjects[i];
+        if (obj instanceof gameObjectType) {
+            list.push(obj);
+        }
+    }
+    return list;
 };
 
 // locates the ith instance of a particular type of GameObject - returns undefined if no such instance
