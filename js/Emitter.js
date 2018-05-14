@@ -10,7 +10,6 @@ function Emitter(kwargs) {
     this._cloth                = false;
     this._width                = undefined;
     this._height               = undefined;
-    this._lifespan             = undefined;
     this._attributeInformation = {
         position:      3,
         velocity:      3,
@@ -19,8 +18,6 @@ function Emitter(kwargs) {
         lifetime:      1,
         dampening:     3
     };
-
-    this._created = GameEngine.now(); // time of creation of emitter
 
     // Parse options
     for (var option in kwargs) {
@@ -43,8 +40,6 @@ function Emitter(kwargs) {
             this._width = value;
         } else if ( option === "height" ) {
             this._height = value;
-        } else if ( option === "lifespan") {
-            this._lifespan = value;
         } else continue;
         // Delete option if dealt with here
         delete kwargs[option];

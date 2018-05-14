@@ -125,17 +125,10 @@ GameEngine.mainLoop = function() {
         for (i = 0; i < emitters.length; i++) {
             var currEmitter = emitters[i];
             currEmitter.update(deltaT);
-
-            // Kill emitters past lifespan
-            if (currEmitter._lifespan !== undefined) {
-                if (this.now() - currEmitter._created > currEmitter._lifespan) {
-                    destroy(currEmitter);
-                }
-            }
         }
 
         // Update all game objects
-        for (var i = 0; i < this._gameObjects.length; i++) {
+        for (i = 0; i < this._gameObjects.length; i++) {
             this._gameObjects[i].update(deltaT);
         }
         LevelManager.update(deltaT);

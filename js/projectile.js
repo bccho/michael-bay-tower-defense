@@ -88,6 +88,7 @@ function Bullet(kwargs) {
 
     kwargs = setDefault(kwargs, "meshes", [body]);
     kwargs = setDefault(kwargs, "blastRadius", 10);
+    kwargs = setDefault(kwargs, "lifespan", 5); // 5 second lifespan
     //kwargs = setDefault(kwargs, "emitter", Explosion);
 
     Projectile.call(this, kwargs);

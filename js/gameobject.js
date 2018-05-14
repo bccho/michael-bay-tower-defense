@@ -11,6 +11,9 @@ function GameObject(kwargs) {
     this._vangle = 0; // global vertical angle
     this._model = undefined; // Group object with all objects to render
     this._heightAboveGround = undefined; // if not undefined, pins position relative to ground level
+    this._lifespan = undefined;
+
+    this._creationTime = GameEngine.now(); // time of creation
 
     // Parse options
     for (var option in kwargs) {
@@ -21,6 +24,8 @@ function GameObject(kwargs) {
             this._angle = value;
         } else if (option === "vangle") {
             this._vangle = value;
+        } else if (option === "lifespan") {
+            this._lifespan = value;
         } else if (option === "meshes") {
             // Make new THREE.Group with meshes
             this._model = new THREE.Group();
@@ -42,6 +47,13 @@ GameObject.prototype.update = function() {
         var elev = Terrain.getElevation(this._position.x, this._position.z);
         if (elev === undefined) elev = 0;
         this._position.y = elev + this._heightAboveGround;
+    }
+
+    // Kill object if past lifespan
+    if (this._lifespan !== undefined) {
+        if (GameEngine.now() - this._creationTime > this._lifespan) {
+            destroy(this);
+        }
     }
 
     // Update model with position and rotation
