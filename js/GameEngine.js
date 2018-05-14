@@ -4,7 +4,7 @@
 var GameEngine = GameEngine || {
     // Instance variables - global delta time, active instances
     _prev_t: undefined,
-    _cur_t: undefined,
+    _time: undefined,
     _isRunning: false,
     _gameObjects: []
 };
@@ -12,7 +12,7 @@ var GameEngine = GameEngine || {
 // Total fresh start
 GameEngine.start = function() {
     this._prev_t = Date.now();
-    this._cur_t  = Date.now();
+    this._time  = 0;
     this._isRunning = true;
     this._gameObjects = [];
 
@@ -22,7 +22,6 @@ GameEngine.start = function() {
 GameEngine.pause = function () {
     this._isRunning = !this._isRunning;
     this._prev_t = Date.now();
-    this._cur_t  = Date.now();
 };
 
 
@@ -91,18 +90,18 @@ GameEngine.findNearestGameObject = function(gameObjectType, position) {
     return this.findGameObject(gameObjectType, minIndex);
 };
 
+// Global time ignoring pauses
+GameEngine.now = function() {
+    return this._time;
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  EMITTER FUNCTIONS                                                                                 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Global time ignoring pauses
-GameEngine.now = function() {
-    return this._cur_t;
-};
-
 GameEngine.getEmitters = function() {
-    return this._gameObjects["Emitter"] || [];
+    return this.findAllGameObjects(Emitter);
 };
 
 
@@ -115,9 +114,10 @@ GameEngine.mainLoop = function() {
     var i;
 
     // determine deltaT
-    this._cur_t = Date.now();
-    var deltaT = (this._cur_t - this._prev_t) / 1000.0;
-    this._prev_t = this._cur_t;
+    var cur_t = Date.now();
+    var deltaT = (cur_t - this._prev_t) / 1000.0;
+    this._time += deltaT;
+    this._prev_t = cur_t;
 
     if (this._isRunning) {
         // Update emitters
