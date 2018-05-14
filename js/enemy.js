@@ -4,12 +4,15 @@ function Enemy(kwargs) {
 
     // Initialize member variables
     this._velocity = new THREE.Vector3();
+    this._health = 1;
 
     // Parse options
     for (var option in kwargs) {
         var value = kwargs[option];
         if (option === "velocity") {
             this._velocity = value;
+        } else if (option === "health") {
+            this._health = value;
         } else continue;
         // Delete option if dealt with here
         delete kwargs[option];
@@ -25,15 +28,28 @@ Enemy.prototype = new AnimatedGameObject();
 Enemy.prototype.update = function(deltaT) {
     this._position.add(this._velocity.clone().multiplyScalar(deltaT));
 
+    // destroy if no health left
+    if (this._health <= 0) {
+        destroy(this);
+        return;
+    }
+
     // Do damage if reached other side of map
     if (this._position.z > Terrain._max.z) {
         // TODO: set damage to parameter
         LevelManager.takeDamage(1);
         destroy(this);
+        return;
     }
 
     // Call base method
     AnimatedGameObject.prototype.update.call(this, deltaT);
+};
+
+Enemy.prototype.takeDamage = function(amount) {
+    this._health -= amount;
+    if (this._health <= 0)
+        destroy(this);
 };
 
 
@@ -50,7 +66,7 @@ function SimpleEnemy(kwargs) {
 
     return this;
 }
-SimpleEnemy.prototype = new Enemy();
+SimpleEnemy.prototype =  new Enemy();
 
 
 // Horse animated enemy

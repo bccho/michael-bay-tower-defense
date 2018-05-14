@@ -5,6 +5,9 @@ function Tower(kwargs) {
     // Initialize member variables
     this._body_model = undefined;
     this._arm_model = undefined;
+    this._range = 1000;
+    this._cooldown = 1;  // in seconds
+    this._timeSinceShot = 0;
 
     // Parse options
     var i;
@@ -20,6 +23,10 @@ function Tower(kwargs) {
             for (i = 0; i < value.length; i++) {
                 this._arm_model.add(value[i]);
             }
+        } else if (option === "range") {
+            this._range = value;
+        } else if (option === "cooldown") {
+            this._cooldown = value;
         } else continue;
         // Delete option if dealt with here
         delete kwargs[option];
@@ -48,11 +55,13 @@ Tower.prototype.getArmAngle = function() {
 
 // Simple tower for quick and dirty testing. Inherits from Tower
 function SimpleTower() {
+    this._height = 15;
+
     var phong = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
-    var tower_body = new THREE.Mesh(new THREE.BoxGeometry(10, 20, 10), phong);
-    var tower_arm = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 15), phong);
+    var tower_body = new THREE.Mesh(new THREE.BoxGeometry(10, this._height + 5, 10), phong);
+    var tower_arm = new THREE.Mesh(new THREE.BoxGeometry(5, 5, this._height), phong);
     tower_body.position.set(0.0, 10.0, 0.0);
-    tower_arm.position.set(0.0, 15.0, 7.5);
+    tower_arm.position.set(0.0, this._height, 7.5);
 
     var kwargs = {body_meshes: [tower_body], arm_meshes: [tower_arm]};
     Tower.call(this, kwargs);
@@ -63,11 +72,26 @@ function SimpleTower() {
 SimpleTower.prototype = new Tower();
 
 SimpleTower.prototype.update = function(deltaT) {
-    var nearestEnemy = GameEngine.findNearestGameObject(Enemy, this._position);
+    this._timeSinceShot += deltaT;
+
+    var nearestEnemy = GameEngine.findNearestGameObject(HorseEnemy, this._position);
+    //console.log(nearestEnemy);
     if (nearestEnemy !== undefined) {
-        var vecToEnemy = nearestEnemy._position.clone().sub(this._position);
+
+        // aim at target
+        var p = new THREE.Vector3(this._position.x, this._position.y + this._height, this._position.z);
+        var vecToEnemy = nearestEnemy._position.clone().sub(p);
         this.setArmAngle(Math.atan2(vecToEnemy.x, vecToEnemy.z));
-        // this._arm_model.lookAt(vecToEnemy); // TODO: can handle vertical angle, but from global coordinates, not local!
+
+        // shoot at target if we can
+        if (nearestEnemy._position.distanceTo(p) <= this._range && this._timeSinceShot >= this._cooldown) {
+            create(Bullet, {
+                "position": p.clone(),
+                "velocity": nearestEnemy._position.clone().sub(p).normalize().multiplyScalar(250),
+                "damage": 10
+            });
+            this._timeSinceShot = 0;
+        }
     }
 
     // Call base method

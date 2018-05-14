@@ -57,6 +57,18 @@ GameEngine.numGameObject = function(gameObjectType) {
     return count;
 };
 
+// returns list of all game objects of a given type
+GameEngine.findAllGameObjects = function(gameObjectType) {
+    var list = [];
+    for (var i = 0; i < this._gameObjects.length; i++) {
+        var obj = this._gameObjects[i];
+        if (obj instanceof gameObjectType) {
+            list.push(obj);
+        }
+    }
+    return list;
+};
+
 // locates the ith instance of a particular type of GameObject - returns undefined if no such instance
 GameEngine.findGameObject = function(gameObjectType, i) {
     if (i < 0 || i >= this._gameObjects.length) return undefined;

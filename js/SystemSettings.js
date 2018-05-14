@@ -58,5 +58,5 @@ SystemSettings.levels.debug = {
     particleMaterial: SystemSettings.standardMaterial,
 
     // Scene
-    initialize : function () { }
+    initialize : function () {}
 };
