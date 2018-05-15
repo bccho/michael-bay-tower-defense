@@ -201,7 +201,9 @@ function RoutingHorseEnemy(kwargs) {
 RoutingHorseEnemy.prototype = new RouteEnemy();
 
 RoutingHorseEnemy.prototype.update = function (deltaT) {
-    this._angle = Math.atan2(this._velocity.x, this._velocity.z);
+    var _targetAngle = Math.atan2(this._velocity.x, this._velocity.z);
+    // this._angle = _targetAngle;
+    this._angle = linearSweepTo(_targetAngle, this._angle, 0.03);
 
     RouteEnemy.prototype.update.call(this, deltaT);
 };

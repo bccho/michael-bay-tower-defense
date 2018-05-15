@@ -153,3 +153,9 @@ function sampleSphere(r) {
     pos = pos.multiplyScalar(r / pos.length());
     return pos;
 }
+
+function linearSweepTo(x_target, x0, speed) {
+    var absdiff = Math.abs(x_target - x0);
+    if (absdiff <= speed) return x_target;
+    return x0 + (x_target - x0) / absdiff * speed;
+}

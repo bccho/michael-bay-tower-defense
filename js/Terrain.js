@@ -174,7 +174,8 @@ Terrain.getGraph = function () {
             for (var di = -1; di <= 1; di++) {
                 for (var dj = -1; dj <= 1; dj++) {
                     if (di === 0 && dj === 0) continue;
-                    if (0 <= i + di && i + di < height && 0 <= j + dj && j + dj < width) {
+                    if (1 <= i + di && i + di < height - 1 &&
+                        0 <= j + dj && j + dj < width) {
                         g.setEdge(nodeId, Terrain._getNodeId(i + di, j + dj), work(i + di, j + dj));
                     }
                 }
