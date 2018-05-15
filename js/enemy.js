@@ -77,30 +77,34 @@ function HorseEnemy(kwargs) {
 }
 HorseEnemy.prototype = new Enemy();
 
+
 // Routing Enemy
 function RouteEnemy(kwargs) {
     kwargs = kwargs || {};
 
-    var radius = 10.0;
-    var phong = new THREE.MeshPhongMaterial( {color: 0xFF0000} );
-    var body = new THREE.Mesh(new THREE.SphereGeometry(radius, 32, 32), phong);
-    body.position.set(0.0, radius, 0.0);
+    // Initialize member variables
+    this._speed = 25;
+    this._wayPts = undefined;
+    this._currDest = undefined;
 
-    kwargs = setDefault(kwargs, "meshes", [body]);
-    // kwargs = setDefault(kwargs, "model_names", ["animated_models/stork.js"]);
-    kwargs = setDefault(kwargs, "speed", 25);
+    // Parse options
+    for (var option in kwargs) {
+        var value = kwargs[option];
+        if (option === "speed") {
+            this._speed = value;
+        } else continue;
+        // Delete option if dealt with here
+        delete kwargs[option];
+    }
     Enemy.call(this, kwargs);
 
-    this._wayPts = getWayPts(this._position.x, this._position.z);
-    this._currDest = this._wayPts.pop();
-    this._speed = kwargs.speed;
+    if (Terrain._initialized) {
+        this._wayPts = getWayPts(this._position.x, this._position.z);
+        this._currDest = this._wayPts.pop();
+    }
 
     return this;
-
 }
-
-// RouteEnemy.prototype = Object.create(Enemy.prototype);
-// RouteEnemy.prototype.constructor = RouteEnemy;
 RouteEnemy.prototype = new Enemy();
 
 RouteEnemy.prototype.update = function (deltaT) {
@@ -113,7 +117,6 @@ RouteEnemy.prototype.update = function (deltaT) {
         if (this._wayPts.length > 0) {
             this._currDest = this._wayPts.pop();
         }
-        this._velocity = new THREE.Vector3();
     } else {
         this._velocity = new THREE.Vector3(destX - this._position.x, 0, destY - this._position.z);
         this._velocity.normalize().multiplyScalar(this._speed); // TODO: add this as parameter
@@ -185,3 +188,18 @@ function getWayPts(x, y) {
 
     return wayPtStack;
 }
+
+
+// Routing horse enemy
+function RoutingHorseEnemy(kwargs) {
+    kwargs = kwargs || {};
+    kwargs = setDefault(kwargs, "model_names", ["animated_models/horse.js"]);
+    RouteEnemy.call(this, kwargs);
+}
+RoutingHorseEnemy.prototype = new RouteEnemy();
+
+RoutingHorseEnemy.prototype.update = function (deltaT) {
+    this._angle = Math.atan2(this._velocity.x, this._velocity.z);
+
+    RouteEnemy.prototype.update.call(this, deltaT);
+};
