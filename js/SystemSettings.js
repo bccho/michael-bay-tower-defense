@@ -42,10 +42,10 @@ SystemSettings.levels.level1 = {
     // Scene
     initialize: function() {
         var elevationFunction = function(i, j) {
-            return (noise.perlin2(i / 5, j / 5)) * 40;
+            return (noise.perlin2(i * Terrain._unitSize / 100, j * Terrain._unitSize / 100)) * 40;
             // return Math.random() * 15.0;
         };
-        Terrain.initialize({elevationInitializer: elevationFunction, width: 20, height: 20});
+        Terrain.initialize({elevationInitializer: elevationFunction, width: 20, height: 20, unitSize: 20});
         Scene.addObject(Terrain.getModel());
 
         var tower = create(SimpleTower);

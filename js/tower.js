@@ -75,7 +75,7 @@ SimpleTower.prototype = new Tower();
 SimpleTower.prototype.update = function(deltaT) {
     this._timeSinceShot += deltaT;
 
-    var nearestEnemy = GameEngine.findNearestGameObject(HorseEnemy, this._position);
+    var nearestEnemy = GameEngine.findNearestGameObject(Enemy, this._position);
     //console.log(nearestEnemy);
     if (nearestEnemy !== undefined) {
 

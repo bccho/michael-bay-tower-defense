@@ -74,12 +74,12 @@ LevelManager.update = function(deltaT) {
             var z = Terrain._min.z;
             var x = Math.random() * (Terrain._max.x - Terrain._min.x) + Terrain._min.x;
             create(HorseEnemy, {
-                position: new THREE.Vector3(x, 0, z), // place randomly on left of terrain
+                position: new THREE.Vector3(x, 0, z), // place randomly on one side of terrain
                 velocity: new THREE.Vector3(0, 0, 20),
                 scale:    new THREE.Vector3(0.05, 0.05, 0.05)
             });
-            LevelManager._currentCooldown = 0;
         }
+        LevelManager._currentCooldown = 0;
     }
 
     // GUI updates

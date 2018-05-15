@@ -1,7 +1,9 @@
 // Terrain is a singleton object that keeps track of terrain, initializes and updates the mesh,
 // and enables elevation queries.
 
-var Terrain = Terrain || {};
+var Terrain = Terrain || {
+    _initialized: false
+};
 
 Terrain.initialize = function(kwargs) {
     kwargs = kwargs || {};
@@ -70,6 +72,7 @@ Terrain.initialize = function(kwargs) {
     this._geometry.computeVertexNormals();
 
     this._model = new THREE.Mesh(this._geometry, this._material);
+    this._initialized = true;
 };
 
 Terrain.getModel = function() {
