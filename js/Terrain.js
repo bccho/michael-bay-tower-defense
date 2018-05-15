@@ -138,29 +138,34 @@ Terrain.getGraph = function () {
     var destNodeID = [];
     var height = myMap[0].length;
     var width = myMap.length;
-    for (var i = 0; i < myMap.length; i++)
-    {
+    for (var i = 0; i < myMap.length; i++) {
         for (var j = 0; j < myMap[0].length; j++) {
             nodeId = Terrain._getNodeId(i, j);
 
             // add to dictionary for client
             idToXY[nodeId] = this.gridToXY(i, j);
 
+            // elevation work function
+            var work = function(dest_i, dest_j) {
+                return Math.max(0, myMap[dest_i][dest_j] - myMap[i][j]);
+                // return Math.abs(myMap[dest_i][dest_j] - myMap[i][j]);
+            };
+
             // connect graph
             if ((i + 1) < height) {
-                g.setEdge(nodeId, Terrain._getNodeId(i + 1, j), Math.abs(myMap[i + 1][j] - myMap[i][j]));
+                g.setEdge(nodeId, Terrain._getNodeId(i + 1, j), work(i + 1, j));
             }
 
             if ((i - 1) >= 0) {
-                g.setEdge(nodeId, Terrain._getNodeId(i - 1, j), Math.abs(myMap[i - 1][j] - myMap[i][j]));
+                g.setEdge(nodeId, Terrain._getNodeId(i - 1, j), work(i - 1, j));
             }
 
             if ((j + 1 < width)) {
-                g.setEdge(nodeId, Terrain._getNodeId(i, j + 1), Math.abs(myMap[i][j + 1] - myMap[i][j]));
+                g.setEdge(nodeId, Terrain._getNodeId(i, j + 1), work(i, j + 1));
             }
 
             if ((j - 1) >= 0) {
-                g.setEdge(nodeId, Terrain._getNodeId(i, j - 1), Math.abs(myMap[i][j - 1] - myMap[i][j]));
+                g.setEdge(nodeId, Terrain._getNodeId(i, j - 1), work(i, j - 1));
             }
 
             if (j === width - 1) {

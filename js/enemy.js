@@ -48,8 +48,10 @@ Enemy.prototype.update = function(deltaT) {
 
 Enemy.prototype.takeDamage = function(amount) {
     this._health -= amount;
-    if (this._health <= 0)
+    if (this._health <= 0) {
         destroy(this);
+        LevelManager._money += 1; // TODO: better API
+    }
 };
 
 
@@ -153,7 +155,7 @@ function getWayPts(x, y) {
     }
 
     function weight (e) {
-        return g.edge(e);
+        return g.edge(e) + Math.random() * 5;
     }
 
     var dijMaterials = graphlib.alg.dijkstra(g, startNode, weight);

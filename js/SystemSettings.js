@@ -34,9 +34,10 @@ SystemSettings.levels.level1 = {
     // Game settings
     gameSettings: {
         initialHealth: 100,
-        initialMoney: 1000,
+        initialMoney: 100,
         towerCost: 100,
-        maxEnemies: 15
+        maxEnemies: 30,
+        cooldown: 0.5
     },
 
     // Scene

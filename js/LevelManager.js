@@ -73,10 +73,10 @@ LevelManager.update = function(deltaT) {
         if (GameEngine.numGameObject(Enemy) < LevelManager._settings.maxEnemies) {
             var z = Terrain._min.z;
             var x = Math.random() * (Terrain._max.x - Terrain._min.x) + Terrain._min.x;
-            create(HorseEnemy, {
+            create(RoutingHorseEnemy, {
                 position: new THREE.Vector3(x, 0, z), // place randomly on one side of terrain
-                velocity: new THREE.Vector3(0, 0, 20),
-                scale:    new THREE.Vector3(0.05, 0.05, 0.05)
+                speed: 20,
+                scale: new THREE.Vector3(0.05, 0.05, 0.05)
             });
         }
         LevelManager._currentCooldown = 0;
