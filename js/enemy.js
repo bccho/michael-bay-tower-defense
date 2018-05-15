@@ -155,7 +155,7 @@ function getWayPts(x, y) {
     }
 
     function weight (e) {
-        return g.edge(e) + Math.random() * 5;
+        return g.edge(e) + Math.random() * 10;
     }
 
     var dijMaterials = graphlib.alg.dijkstra(g, startNode, weight);

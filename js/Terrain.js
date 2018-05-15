@@ -129,7 +129,7 @@ Terrain.getElevation = function(x, y) {
     return this.interpolateElevation(i, j);
 };
 
-// Return a graph of the terrain used for naviagation.
+// Return a graph of the terrain used for navigation.
 Terrain.getGraph = function () {
     var myMap = this._elevationMap;
     var g = new graphlib.Graph();
@@ -147,25 +147,37 @@ Terrain.getGraph = function () {
 
             // elevation work function
             var work = function(dest_i, dest_j) {
-                return Math.max(0, myMap[dest_i][dest_j] - myMap[i][j]);
+                var w_elev = Math.max(0, myMap[dest_i][dest_j] - myMap[i][j]);
+                var w_dist = hypot(dest_i - i, dest_j - j) * Terrain._unitSize;
+                return w_elev + w_dist;
                 // return Math.abs(myMap[dest_i][dest_j] - myMap[i][j]);
             };
 
             // connect graph
-            if ((i + 1) < height) {
-                g.setEdge(nodeId, Terrain._getNodeId(i + 1, j), work(i + 1, j));
-            }
+            // if ((i + 1) < height) {
+            //     g.setEdge(nodeId, Terrain._getNodeId(i + 1, j), work(i + 1, j));
+            // }
+            //
+            // if ((i - 1) >= 0) {
+            //     g.setEdge(nodeId, Terrain._getNodeId(i - 1, j), work(i - 1, j));
+            // }
+            //
+            // if ((j + 1 < width)) {
+            //     g.setEdge(nodeId, Terrain._getNodeId(i, j + 1), work(i, j + 1));
+            // }
+            //
+            // if ((j - 1) >= 0) {
+            //     g.setEdge(nodeId, Terrain._getNodeId(i, j - 1), work(i, j - 1));
+            // }
 
-            if ((i - 1) >= 0) {
-                g.setEdge(nodeId, Terrain._getNodeId(i - 1, j), work(i - 1, j));
-            }
-
-            if ((j + 1 < width)) {
-                g.setEdge(nodeId, Terrain._getNodeId(i, j + 1), work(i, j + 1));
-            }
-
-            if ((j - 1) >= 0) {
-                g.setEdge(nodeId, Terrain._getNodeId(i, j - 1), work(i, j - 1));
+            // 8-connect graph
+            for (var di = -1; di <= 1; di++) {
+                for (var dj = -1; dj <= 1; dj++) {
+                    if (di === 0 && dj === 0) continue;
+                    if (0 <= i + di && i + di < height && 0 <= j + dj && j + dj < width) {
+                        g.setEdge(nodeId, Terrain._getNodeId(i + di, j + dj), work(i + di, j + dj));
+                    }
+                }
             }
 
             if (j === width - 1) {

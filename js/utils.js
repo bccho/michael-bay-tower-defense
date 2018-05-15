@@ -131,6 +131,10 @@ function setDefault(dict, key, defaultValue) {
     return dict;
 }
 
+function hypot(x, y) {
+    return Math.sqrt(x * x + y * y);
+}
+
 function lerp(x0, x1, alpha) {
     return x0 * (1 - alpha) + x1 * alpha;
 }
