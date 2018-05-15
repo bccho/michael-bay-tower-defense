@@ -35,7 +35,7 @@ window.onload = function() {
     InputManager.initialize();
 
     // Set up scene
-    Batch.systemChangeCallback(SystemSettings[Batch.selectedSystem]);
+    Batch.systemChangeCallback(SystemSettings.levels[Batch.selectedSystem]);
 
     if (Batch.selectedSystem !== 'cloth') {
         var emitters = GameEngine.getEmitters();
